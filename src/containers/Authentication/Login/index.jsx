@@ -106,7 +106,7 @@ const Login = () => {
             <div className="login-container">
                 <div className="login-form">
                     <h1>Start your journey</h1>
-                    <h2>Sign In to Chionster ADMIN</h2>
+                    <h2>Sign In to Question Bank ADMIN</h2>
                     <form className='form-body' onSubmit={handleEmailLogin}>
                         <div className="input-group">
                             <input
