@@ -132,11 +132,11 @@ const Login = () => {
                     </form>
                     <p className="footer">
                         Forgot Password?{' '}
-                        <span onClick={() => navigate('/forgetpassword')}>Click Here</span>
+                        <span>Click Here</span>
                     </p>
                     <p>
                         Don't have an account?{' '}
-                        <span onClick={() => navigate('/signup')}>Sign Up</span>
+                        <span>Sign Up</span>
                     </p>
                 </div>
                 <div className="login-banner"></div>
