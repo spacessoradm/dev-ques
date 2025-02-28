@@ -20,11 +20,6 @@ import AdminDashboard from './containers/Admin/Admin_Dashboard';
 
 //Ques
 
-import VenueCategory from './containers/Admin/Venue_Category/index.jsx';
-import CreateVenueCategory from './containers/Admin/Venue_Category/CreateVenueCategory';
-import ViewVenueCategory from './containers/Admin/Venue_Category/ViewVenueCategory';
-import EditVenueCategory from './containers/Admin/Venue_Category/EditVenueCategory';
-
 import Vibes from './containers/Admin/Vibe/index.jsx';
 import CreateVibe from './containers/Admin/Vibe/CreateVibe';
 import ViewVibe from './containers/Admin/Vibe/ViewVibe';
@@ -64,6 +59,11 @@ import Roles from './containers/Admin/Roles/index.jsx';
 import CreateRole from './containers/Admin/Roles/CreateRole';
 import ViewRole from './containers/Admin/Roles/ViewRole';
 import EditRole from './containers/Admin/Roles/EditRole';
+
+import QuestionCategory from './containers/Admin/Question_Category/index.jsx';
+import CreateQuestionCategory from './containers/Admin/Question_Category/CreateQuestionCategory.jsx';
+import ViewQuestionCategory from './containers/Admin/Question_Category/ViewQuestionCategory.jsx';
+import EditQuestionCategory from './containers/Admin/Question_Category/EditQuestionCategory.jsx';
 
 import SubscriptionPlans from './containers/Admin/Subscription_Plans/index.jsx';
 import CreatePlan from './containers/Admin/Subscription_Plans/CreatePlan.jsx';
@@ -169,34 +169,34 @@ const App = () => {
                             />
                             
                             <Route
-                                path="/admin/venuecategory"
+                                path="/admin/questioncategory"
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <VenueCategory />
+                                        <QuestionCategory />
                                     </AdminLayout>
                                 }
                             />
                             <Route
-                                path="/admin/venuecategory/create"
+                                path="/admin/questioncategory/create"
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <CreateVenueCategory />
+                                        <CreateQuestionCategory />
                                     </AdminLayout>
                                 }
                             />
                             <Route
-                                path="/admin/venuecategory/view/:id"
+                                path="/admin/questioncategory/view/:id"
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <ViewVenueCategory/>
+                                        <ViewQuestionCategory/>
                                     </AdminLayout>
                                 }
                             />
                             <Route
-                                path="/admin/venuecategory/edit/:id"
+                                path="/admin/questioncategory/edit/:id"
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <EditVenueCategory/>
+                                        <EditQuestionCategory/>
                                     </AdminLayout>
                                 }
                             />
