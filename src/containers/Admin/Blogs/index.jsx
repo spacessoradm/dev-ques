@@ -136,7 +136,7 @@ const Blogs = () => {
 
   return (
     <div className='whole-page'>
-      <p className='title-page'>Blog Module</p>
+      <p className='title-page'>Blog Management</p>
       <p className='subtitle-page'>Manage app blogs here.</p>
 
       <SearchBar
