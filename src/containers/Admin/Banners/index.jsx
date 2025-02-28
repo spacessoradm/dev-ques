@@ -100,7 +100,7 @@ const Banner = () => {
       setLoading(true);
 
       const { error } = await supabase
-        .from('images_path')
+        .from('banner')
         .delete()
         .eq('id', id);
 
