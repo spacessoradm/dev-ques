@@ -18,14 +18,7 @@ import AdminLayout from './components/AdminLayout';
 import SideNavBar from './containers/Admin/Admin_Navigation/SideNavBar';
 import AdminDashboard from './containers/Admin/Admin_Dashboard';
 
-//Chiongster
-import AppUsers from './containers/Admin/App_Users/index.jsx';
-import EditAppUser from './containers/Admin/App_Users/EditAppUser';
-import ViewAppUser from './containers/Admin/App_Users/ViewAppUser';
-
-import DrinkDollars from './containers/Admin/Drink_Dollars/index.jsx';
-import ViewDrinkDollar from './containers/Admin/Drink_Dollars/ViewDrinkDollar';
-import CreateDDTransaction from './containers/Admin/Drink_Dollars/CreateDDTransaction';
+//Ques
 
 import VenueCategory from './containers/Admin/Venue_Category/index.jsx';
 import CreateVenueCategory from './containers/Admin/Venue_Category/CreateVenueCategory';
@@ -48,26 +41,11 @@ import EditDamage from './containers/Admin/Venues/EditDamage';
 import EditMenu from './containers/Admin/Venues/EditMenu';
 import EditVenueRedeemItem from './containers/Admin/Venues/EditRedeemItem';
 
-import Blogs from './containers/Admin/Blogs/index.jsx';
-import CreateBlog from './containers/Admin/Blogs/CreateBlog';
-import ViewBlog from './containers/Admin/Blogs/ViewBlog';
-import EditBlog from './containers/Admin/Blogs/EditBlog';
-
 import Bookings from './containers/Admin/Bookings/index.jsx';
 import CreateBooking from './containers/Admin/Bookings/CreateBooking';
 import ViewBooking from './containers/Admin/Bookings/ViewBooking';
 import EditBooking from './containers/Admin/Bookings/EditBooking';
 import EditRedemption from './containers/Admin/Bookings/EditRedemption';
-
-import Managers from './containers/Admin/Managers/index.jsx';
-import CreateManager from './containers/Admin/Managers/CreateManager';
-import ViewManager from './containers/Admin/Managers/ViewManager';
-import EditManager from './containers/Admin/Managers/EditManager';
-
-import RedeemItems from './containers/Admin/Redeem_Items/index.jsx';
-import CreateRedeemItem from './containers/Admin/Redeem_Items/CreateRedeemItem';
-import ViewRedeemItem from './containers/Admin/Redeem_Items/ViewRedeemItem';
-import EditRedeemItem from './containers/Admin/Redeem_Items/EditRedeemItem';
 
 import Banners from './containers/Admin/Banners/index.jsx';
 import CreateBanner from './containers/Admin/Banners/CreateBanner';
@@ -78,41 +56,34 @@ import CreateLanguage from './containers/Admin/Languages/CreateLanguage';
 import ViewLanguage from './containers/Admin/Languages/ViewLanguage';
 import EditLanguage from './containers/Admin/Languages/EditLanguage';
 
-import RecommendedTags from './containers/Admin/Recommended_Tags/index.jsx';
-import CreateRecommendedTag from './containers/Admin/Recommended_Tags/CreateRecommendedTag';
-import ViewRecommendedTag from './containers/Admin/Recommended_Tags/ViewRecommendedTag';
-import EditRecommendedTag from './containers/Admin/Recommended_Tags/EditRecommendedTag';
+import User from './containers/Admin/Users/index.jsx';
+import ViewUser from './containers/Admin/Users/ViewUser.jsx';
+import EditUser from './containers/Admin/Users/EditUser.jsx';
+
+import Roles from './containers/Admin/Roles/index.jsx';
+import CreateRole from './containers/Admin/Roles/CreateRole';
+import ViewRole from './containers/Admin/Roles/ViewRole';
+import EditRole from './containers/Admin/Roles/EditRole';
+
+import SubscriptionPlans from './containers/Admin/Subscription_Plans/index.jsx';
+import CreatePlan from './containers/Admin/Subscription_Plans/CreatePlan.jsx';
+import ViewPlan from './containers/Admin/Subscription_Plans/ViewPlan.jsx';
+import EditPlan from './containers/Admin/Subscription_Plans/EditPlan.jsx';
+
+import FooterMenu from './containers/Admin/Footer_Menu/index.jsx';
+import CreateFooterMenu from './containers/Admin/Footer_Menu/CreateFooterMenu';
+import EditFooterMenu from './containers/Admin/Footer_Menu/EditFooterMenu';
+import CreateSubFooterMenu from './containers/Admin/Footer_Menu/CreateSubFooterMenu';
 
 import BlogTags from './containers/Admin/Blog_Tags/index.jsx';
 import CreateBlogTag from './containers/Admin/Blog_Tags/CreateBlogTag';
 import ViewBlogTag from './containers/Admin/Blog_Tags/ViewBlogTag';
 import EditBlogTag from './containers/Admin/Blog_Tags/EditBlogTag';
 
-import Notis from './containers/Admin/Notis/index.jsx';
-import CreateNotis from './containers/Admin/Notis/CreateNotis';
-import ViewNotis from './containers/Admin/Notis/ViewNotis';
-import EditNotis from './containers/Admin/Notis/EditNotis';
-
-import AlcoholBalance from './containers/Admin/Alcohol_Balance/index.jsx';
-import CreateAlcoholBalance from './containers/Admin/Alcohol_Balance/CreateAlcoholBalance';
-import ViewAlcoholBalance from './containers/Admin/Alcohol_Balance/ViewAlcoholBalance';
-import EditAlcoholBalance from './containers/Admin/Alcohol_Balance/EditAlcoholBalance';
-
-import FooterMenu from './containers/Admin/Footer_Menu/index.jsx';
-import CreateFooterMenu from './containers/Admin/Footer_Menu/CreateFooterMenu';
-//import ViewFooterMenu from './containers/Admin/Footer_Menu/ViewFooterMenu';
-import EditFooterMenu from './containers/Admin/Footer_Menu/EditFooterMenu';
-import CreateSubFooterMenu from './containers/Admin/Footer_Menu/CreateSubFooterMenu';
-
-import Packages from './containers/Admin/Packages/index.jsx';
-import CreatePackage from './containers/Admin/Packages/CreatePackage.jsx';
-import ViewPackage from './containers/Admin/Packages/ViewPackage.jsx';
-import EditPackage from './containers/Admin/Packages/EditPackage.jsx';
-
-import Tiers from './containers/Admin/Tiers/index.jsx';
-import CreateTier from './containers/Admin/Tiers/CreateTier.jsx';
-import ViewTier from './containers/Admin/Tiers/ViewTier.jsx';
-import EditTier from './containers/Admin/Tiers/EditTier.jsx';
+import Blogs from './containers/Admin/Blogs/index.jsx';
+import CreateBlog from './containers/Admin/Blogs/CreateBlog';
+import ViewBlog from './containers/Admin/Blogs/ViewBlog';
+import EditBlog from './containers/Admin/Blogs/EditBlog';
 
 import { AuthClient } from '@supabase/supabase-js';
 
@@ -172,53 +143,31 @@ const App = () => {
                                 }
                             />
                             <Route
-                                path="/admin/appusers"
+                                path="/admin/user"
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <AppUsers />
+                                        <User />
+                                    </AdminLayout>
+                                }
+                            />
+
+                            <Route
+                                path="/admin/users/view/:id"
+                                element={
+                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
+                                        <ViewUser />
                                     </AdminLayout>
                                 }
                             />
                             <Route
-                                path="/admin/appusers/view/:id"
+                                path="/admin/users/edit/:id"
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <ViewAppUser />
+                                        <EditUser />
                                     </AdminLayout>
                                 }
                             />
-                            <Route
-                                path="/admin/appusers/edit/:id"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <EditAppUser />
-                                    </AdminLayout>
-                                }
-                            />
-                            <Route
-                                path="/admin/drinkdollars"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <DrinkDollars />
-                                    </AdminLayout>
-                                }
-                            />
-                            <Route
-                                path="/admin/drinkdollars/view/:id"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <ViewDrinkDollar />
-                                    </AdminLayout>
-                                }
-                            />
-                            <Route
-                                path="/admin/drinkdollars/createtransaction/:id"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <CreateDDTransaction />
-                                    </AdminLayout>
-                                }
-                            />
+                            
                             <Route
                                 path="/admin/venuecategory"
                                 element={
@@ -440,72 +389,6 @@ const App = () => {
                             />
 
                             <Route
-                                path="/admin/managers"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <Managers />
-                                    </AdminLayout>
-                                }
-                            />
-                            <Route
-                                path="/admin/managers/create"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <CreateManager />
-                                    </AdminLayout>
-                                }
-                            />
-                            <Route
-                                path="/admin/managers/view/:id"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <ViewManager/>
-                                    </AdminLayout>
-                                }
-                            />
-                            <Route
-                                path="/admin/managers/edit/:id"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <EditManager />
-                                    </AdminLayout>
-                                }
-                            />
-
-                            <Route
-                                path="/admin/redeemitems"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <RedeemItems />
-                                    </AdminLayout>
-                                }
-                            />
-                            <Route
-                                path="/admin/redeemitems/create"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <CreateRedeemItem />
-                                    </AdminLayout>
-                                }
-                            />
-                            <Route
-                                path="/admin/redeemitems/view/:id"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <ViewRedeemItem/>
-                                    </AdminLayout>
-                                }
-                            />
-                            <Route
-                                path="/admin/redeemitems/edit/:id"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <EditRedeemItem/>
-                                    </AdminLayout>
-                                }
-                            />
-
-                            <Route
                                 path="/admin/banners"
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
@@ -564,39 +447,6 @@ const App = () => {
                                 }
                             />
 
-<Route
-                                path="/admin/recommendedtags"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <RecommendedTags />
-                                    </AdminLayout>
-                                }
-                            />
-                            <Route
-                                path="/admin/recommendedtags/create"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <CreateRecommendedTag />
-                                    </AdminLayout>
-                                }
-                            />
-                            <Route
-                                path="/admin/recommendedtags/view/:id"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <ViewRecommendedTag/>
-                                    </AdminLayout>
-                                }
-                            />
-                            <Route
-                                path="/admin/recommendedtags/edit/:id"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <EditRecommendedTag/>
-                                    </AdminLayout>
-                                }
-                            />
-
                             <Route
                                 path="/admin/blogtags"
                                 element={
@@ -626,73 +476,6 @@ const App = () => {
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
                                         <EditBlogTag/>
-                                    </AdminLayout>
-                                }
-                            />
-
-                            <Route
-                                path="/admin/notis"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <Notis />
-                                    </AdminLayout>
-                                }
-                            />
-                            <Route
-                                path="/admin/notis/create"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <CreateNotis />
-                                    </AdminLayout>
-                                }
-                            />
-                            <Route
-                                path="/admin/notis/edit/:id"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <EditNotis/>
-                                    </AdminLayout>
-                                }
-                            />
-                            <Route
-                                path="/admin/notis/view/:id"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <ViewNotis/>
-                                    </AdminLayout>
-                                }
-                            />
-
-                            <Route
-                                path="/admin/alcoholbalance"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <AlcoholBalance />
-                                    </AdminLayout>
-                                }
-                            />
-                            <Route
-                                path="/admin/alcoholbalance/create"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <CreateAlcoholBalance/>
-                                    </AdminLayout>
-                                }
-                            />
-
-                            <Route
-                                path="/admin/alcoholbalance/edit/:id"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <EditAlcoholBalance/>
-                                    </AdminLayout>
-                                }
-                            />
-                            <Route
-                                path="/admin/alcoholbalance/view/:id"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <ViewAlcoholBalance/>
                                     </AdminLayout>
                                 }
                             />
@@ -730,74 +513,74 @@ const App = () => {
                                 }
                             />
 
-                            <Route
-                                path="/admin/packages"
+                            <Route 
+                                path="/admin/roles"
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <Packages />
+                                        <Roles />
                                     </AdminLayout>
                                 }
                             />
 
                             <Route
-                                path="/admin/packages/create"
+                                path="/admin/roles/create"
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <CreatePackage/>
+                                        <CreateRole/>
                                     </AdminLayout>
                                 }
                             />
 
                             <Route
-                                path="/admin/packages/view/:id"
+                                path="/admin/roles/view/:id"
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <ViewPackage/>
+                                        <ViewRole/>
                                     </AdminLayout>
                                 }
                             />
 
                             <Route
-                                path="/admin/packages/edit/:id"
+                                path="/admin/roles/edit/:id"
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <EditPackage/>
+                                        <EditRole/>
                                     </AdminLayout>
                                 }
                             />
 
                             <Route 
-                                path="/admin/tiers"
+                                path="/admin/subscriptionplans"
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <Tiers />
+                                        <SubscriptionPlans />
                                     </AdminLayout>
                                 }
                             />
 
                             <Route
-                                path="/admin/tiers/create"
+                                path="/admin/subscriptionplans/create"
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <CreateTier />
+                                        <CreatePlan/>
                                     </AdminLayout>
                                 }
                             />
 
                             <Route
-                                path="/admin/tiers/view/:id"
+                                path="/admin/subscriptionplans/view/:id"
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <ViewTier/>
+                                        <ViewPlan/>
                                     </AdminLayout>
                                 }
                             />
 
                             <Route
-                                path="/admin/tiers/edit/:id"
+                                path="/admin/subscriptionplans/edit/:id"
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <EditTier/>
+                                        <EditPlan/>
                                     </AdminLayout>
                                 }
                             />
