@@ -48,7 +48,7 @@ const Login = () => {
             const { data: adminProfileData, error: adminProfileError } = await supabase
                 .from('profiles')
                 .select('id, role_id')
-                .eq('unique_id', data.user.id)
+                .eq('user_id', data.user.id)
                 .single();
 
             if (adminProfileError) {
