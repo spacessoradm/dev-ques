@@ -18,13 +18,18 @@ const adminNavBarItems = [
         icon: <FaTachometerAlt />,
     },
     {
-        title: "Users Management",
+        title: "Users",
         link: "/admin/user",
         icon: <FaUser />,
     },
     {
-        title: "Manage Blogs",
+        title: "Blogs",
         link: "/admin/blogs",
+        icon: <FaUser />,
+    },
+    {
+        title: "Testimonial",
+        link: "/admin/testimonials",
         icon: <FaUser />,
     },
     {
