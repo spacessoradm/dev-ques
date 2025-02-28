@@ -58,7 +58,7 @@ const Login = () => {
 
             const { data: roleData, error: roleNameError } = await supabase
                 .from('roles')
-                .select('role_name')
+                .select('name')
                 .eq('id', adminProfileData.role_id)
                 .single();
 
@@ -67,7 +67,7 @@ const Login = () => {
                 throw roleNameError;
             }
 
-            const roleName = roleData?.role_name.trim().toLowerCase() || 'Unknown';
+            const roleName = roleData?.name.trim().toLowerCase() || 'Unknown';
             //updateUserRole(roleName);
 
             localStorage.setItem('role', roleName);
@@ -106,7 +106,7 @@ const Login = () => {
             <div className="login-container">
                 <div className="login-form">
                     <h1>Start your journey</h1>
-                    <h2>Sign In to Question Bank ADMIN</h2>
+                    <h2>Sign In to Chionster ADMIN</h2>
                     <form className='form-body' onSubmit={handleEmailLogin}>
                         <div className="input-group">
                             <input
@@ -132,11 +132,11 @@ const Login = () => {
                     </form>
                     <p className="footer">
                         Forgot Password?{' '}
-                        <span>Click Here</span>
+                        <span onClick={() => navigate('/forgetpassword')}>Click Here</span>
                     </p>
                     <p>
                         Don't have an account?{' '}
-                        <span>Sign Up</span>
+                        <span onClick={() => navigate('/signup')}>Sign Up</span>
                     </p>
                 </div>
                 <div className="login-banner"></div>
