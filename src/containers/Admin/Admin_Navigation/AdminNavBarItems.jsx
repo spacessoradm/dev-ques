@@ -48,6 +48,11 @@ const adminNavBarItems = [
                 icon: <FaListAlt />,
             },
             {
+                title: "Question Category Management",
+                link: "/admin/questioncategory",
+                icon: <FaListAlt />,
+            },
+            {
                 title: "Subscription Plan Management",
                 link: "/admin/subscriptionplans",
                 icon: <FaListAlt />,
