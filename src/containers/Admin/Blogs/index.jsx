@@ -160,7 +160,6 @@ const Blogs = () => {
             <thead>
               <tr className='header-row'>
                 <th className='normal-header'> ID </th>
-                <th className='normal-header'> Image </th>
                 <th
                   onClick={() => handleSort("title")}
                   className='sort-header'
@@ -181,12 +180,6 @@ const Blogs = () => {
               {filteredBlogs.map((blog) => (
                 <tr key={blog.id}>
                   <td className='normal-column'>{blog.id}</td>
-                  <td className="normal-column">
-                      <img
-                        src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/${blog.image_path}`}
-                        style={{ width: "50px", height: "50px", objectFit: "cover" }}
-                      />
-                  </td>
                   <td className='normal-column'>{blog.title}</td>
                   <td className='normal-column'>{blog.tags}</td>
                   <td className='normal-column'>{blog.created_at}</td>

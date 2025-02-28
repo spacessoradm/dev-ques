@@ -70,7 +70,6 @@ const CreateBlog = () => {
         setFormData((prev) => ({ ...prev, content: value }));
     };
     
-    
 
     const handleImageUpload = async () => {
         const input = document.createElement('input');
@@ -131,7 +130,7 @@ const CreateBlog = () => {
                         title: formData.title,
                         content: formData.content,  // Stored as HTML
                         tags_id: formData.tags_id,
-                        image_path: formData.image_path,
+                        image_path: '',
                         created_at: new Date().toISOString(),
                         modified_at: new Date().toISOString(),
                     },
@@ -213,9 +212,6 @@ const CreateBlog = () => {
                             className="enhanced-input"
                         />
                     </div>
-
-
-                    <CreateBlogImage onUpload={(url) => setFormData({ ...formData, image_path: url })} />
 
                     <button type="submit" className="create-btn" disabled={loading}>
                         {loading ? 'Creating...' : 'Create'}

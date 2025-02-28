@@ -4,43 +4,34 @@ import { useNavigate } from "react-router-dom";
 import "./index.css";
 
 const AdminDashboard = () => {
+    const [userRole, setUserRole] = useState(null);
     const [adminUser, setAdminUser] = useState(null);
-    const [userCount, setUserCount] = useState(0);
-    const [ingredientCount, setIngredientCount] = useState(0);
-    const [inventoryCount, setInventoryCount] = useState(0);
     const navigate = useNavigate();
 
     // Fetch admin user and dropdown data
     useEffect(() => {
+
         const fetchAdminUser = async () => {
+            const ur = localStorage.getItem('role');
             const { data, error } = await supabase.auth.getSession();
             if (error) {
                 console.error("Error fetching admin user:", error.message);
                 navigate("/login");
             } else {
-                const user = data?.session?.user || null;
-                const userRole = "admin"; // Replace with dynamic role fetching
-                if (userRole !== "admin") {
+                const user = data?.session?.user || null;// Replace with dynamic role fetching
+                if (ur !== "admin") {
+                    console.log("im here, i not admin");
                     console.warn("Access denied: User is not an admin.");
                     navigate("/");
                 } else {
+                    console.log("im here, i am admin and set user");
                     setAdminUser(user);
-                    fetchCounts();
                 }
             }
         };
 
         fetchAdminUser();
     }, [navigate]);
-
-    // Fetch total counts for users, ingredients, and inventory
-    const fetchCounts = async () => {
-        try {
-            // Fetch total users
-        } catch (error) {
-            console.error("Error fetching counts:", error.message);
-        }
-    };
 
     return (
         <div className="admin-dashboard">
@@ -51,6 +42,10 @@ const AdminDashboard = () => {
                     className="sign-out-btn"
                     onClick={async () => {
                         await supabase.auth.signOut();
+                        localStorage.clear();
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 100);
                         navigate("/login");
                     }}
                 >

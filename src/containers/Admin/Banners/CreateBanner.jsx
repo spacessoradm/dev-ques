@@ -48,17 +48,27 @@ const CreateBanner = () => {
         try {
             let uploadedImagePath = null; 
 
-            if (formData.image) {
+            if (formData.image instanceof File) {
+                console.log('Uploading:', formData.image.name);
+                
                 const { data, error: uploadError } = await supabase.storage
                     .from('banner')
-                    .upload(`${Date.now()}-${formData.image.name}`, formData.image);
-    
-                if (uploadError) throw uploadError;
-    
+                    .upload(`${Date.now()}-${formData.image.name}`, formData.image, {
+                        contentType: formData.image.type,
+                        upsert: true
+                    });
+            
+                if (uploadError) {
+                    console.error('Upload failed:', uploadError);
+                    throw uploadError;
+                }
+            
                 uploadedImagePath = data.path;
+                console.log('Uploaded file path:', uploadedImagePath);
             } else {
-                throw new Error("Image is required.");
+                throw new Error("Image is required and must be a valid file.");
             }
+            
 
             const { error: bannerError } = await supabase
                 .from('banner')

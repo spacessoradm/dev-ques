@@ -178,29 +178,6 @@ const EditBlog = () => {
                         />
                     </div>
 
-                    {/* Image Upload */}
-                    <div className="field-container">
-                        <label>Blog Image:</label>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={e => setSelectedImage(e.target.files[0])}
-                            className="enhanced-input"
-                        />
-                    </div>
-
-                    {/* Display Current Image */}
-                    {formData.image_path && (
-                        <div className="field-container">
-                            <label>Current Image:</label>
-                            <img
-                                src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/${formData.image_path}`}
-                                alt="Current"
-                                className="preview-image"
-                            />
-                        </div>
-                    )}
-
                     <button type="submit" className="submit-btn" disabled={loading}>
                         {loading ? "Updating..." : "Update"}
                     </button>

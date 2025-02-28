@@ -18,35 +18,8 @@ const adminNavBarItems = [
         icon: <FaTachometerAlt />,
     },
     {
-        title: "Manage App Users",
-        link: "/admin/appusers",
-        icon: <FaUser />,
-    },
-
-    {
-        title: "Manage Managers",
-        link: "/admin/managers",
-        icon: <FaUser />,
-    },
-
-    {
-        title: "Manage Bookings",
-        link: "/admin/bookings",
-        icon: <FaUser />,
-    },
-    {
-        title: "Manage Alcohol Balance",
-        link: "/admin/alcoholbalance",
-        icon: <FaUser />,
-    },
-    {
-        title: "Manage Drink Dollars",
-        link: "/admin/drinkdollars",
-        icon: <FaUser />,
-    },
-    {
-        title: "Manage Venues",
-        link: "/admin/venues",
+        title: "Users Management",
+        link: "/admin/user",
         icon: <FaUser />,
     },
     {
@@ -75,43 +48,13 @@ const adminNavBarItems = [
                 icon: <FaListAlt />,
             },
             {
-                title: "Manage Notis",
-                link: "/admin/notis",
+                title: "Subscription Plan Management",
+                link: "/admin/subscriptionplans",
                 icon: <FaListAlt />,
             },
             {
-                title: "Manage Language",
-                link: "/admin/languages",
-                icon: <FaListAlt />,
-            },
-            {
-                title: "Manage Packages",
-                link: "/admin/packages",
-                icon: <FaListAlt />,
-            },
-            {
-                title: "Manage Tiers",
-                link: "/admin/tiers",
-                icon: <FaListAlt />,
-            },
-            {
-                title: "Manage Recommended Tags",
-                link: "/admin/recommendedtags",
-                icon: <FaListAlt />,
-            },
-            {
-                title: "Manage Redeem Items",
-                link: "/admin/redeemitems",
-                icon: <FaListAlt />,
-            },
-            {
-                title: "Manage Venue Category",
-                link: "/admin/venuecategory",
-                icon: <FaListAlt />,
-            },
-            {
-                title: "Manage Vibe",
-                link: "/admin/vibe",
+                title: "Role Management",
+                link: "/admin/roles",
                 icon: <FaListAlt />,
             },
         ]
