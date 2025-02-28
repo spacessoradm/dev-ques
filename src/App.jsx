@@ -65,6 +65,10 @@ import CreateQuestionCategory from './containers/Admin/Question_Category/CreateQ
 import ViewQuestionCategory from './containers/Admin/Question_Category/ViewQuestionCategory.jsx';
 import EditQuestionCategory from './containers/Admin/Question_Category/EditQuestionCategory.jsx';
 
+import Testimonials from './containers/Admin/Testimonials/index.jsx';
+import CreateTestimonial from './containers/Admin/Testimonials/CreateTestimonial.jsx';
+import EditTestimonial from './containers/Admin/Testimonials/EditTestimonial.jsx';
+
 import SubscriptionPlans from './containers/Admin/Subscription_Plans/index.jsx';
 import CreatePlan from './containers/Admin/Subscription_Plans/CreatePlan.jsx';
 import ViewPlan from './containers/Admin/Subscription_Plans/ViewPlan.jsx';
@@ -86,6 +90,7 @@ import ViewBlog from './containers/Admin/Blogs/ViewBlog';
 import EditBlog from './containers/Admin/Blogs/EditBlog';
 
 import { AuthClient } from '@supabase/supabase-js';
+
 
 const App = () => {
     //const [userRole, setUserRole] = useState('');
@@ -197,6 +202,31 @@ const App = () => {
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
                                         <EditQuestionCategory/>
+                                    </AdminLayout>
+                                }
+                            />
+
+                            <Route
+                                path="/admin/testimonials"
+                                element={
+                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
+                                        <Testimonials />
+                                    </AdminLayout>
+                                }
+                            />
+                            <Route
+                                path="/admin/testimonials/create"
+                                element={
+                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
+                                        <CreateTestimonial />
+                                    </AdminLayout>
+                                }
+                            />
+                            <Route
+                                path="/admin/testimonials/edit/:id"
+                                element={
+                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
+                                        <EditTestimonial/>
                                     </AdminLayout>
                                 }
                             />
