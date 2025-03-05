@@ -121,7 +121,7 @@ const QuestionDisplay = () => {
 
     return (
         <div className="question-display-container" style={{ backgroundColor: "white", minHeight: "100vh", padding: "24px" }}>
-            <BackButton to="/admin/bookings" />
+            <BackButton to="/quesbank/homepage" />
             <div className="question-progress">
                 <ul className="progress-bar">
                     {questions.map((_, index) => {
