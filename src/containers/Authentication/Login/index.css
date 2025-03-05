@@ -109,18 +109,18 @@ button:hover:not(:disabled) {
 }
 
 /* Footer */
-.footer {
+.footers {
   margin-top: 1rem;
   font-size: 0.9rem;
   color: #555;
 }
 
-.footer span {
+.footers span {
   color: #007bff;
   cursor: pointer;
 }
 
-.footer span:hover {
+.footers span:hover {
   text-decoration: underline;
 }
 
