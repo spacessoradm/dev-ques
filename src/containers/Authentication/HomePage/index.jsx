@@ -77,7 +77,7 @@ export default function HomePage() {
         </nav>
 
         <div className="flex items-center space-x-4">
-          <a href="/Chiongster/login" className="btn btn-outline">
+          <a href="/quesbank/login" className="btn btn-outline">
             Sign in
           </a>
           <a href="#" className="btn btn-primary">
@@ -98,10 +98,10 @@ export default function HomePage() {
             single, powerful web platform.
           </p>
           <div className="flex flex-col sm-flex-row gap-4">
-            <a href="/demo" className="btn btn-primary w-full sm-w-auto">
+            <a href="#" className="btn btn-primary w-full sm-w-auto">
               Book a demo
             </a>
-            <a href="/try" className="btn btn-outline w-full sm-w-auto">
+            <a href="/quesbank/demo" className="btn btn-outline w-full sm-w-auto">
               Try free
             </a>
           </div>
