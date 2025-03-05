@@ -40,4 +40,23 @@
   .close-modal-btn:hover {
     opacity: 0.9;
   }
+
+  .ql-container {
+    height: 350px !important;
+  }
+  
+  .ql-editor {
+    min-height: 350px;
+    font-size: 16px;
+  }
+
+  .addbtn {
+    background-color: green;
+    margin-top: 24px;
+  }
+  .removebtn {
+    background-color: red;
+    width: 40px;
+  }
+  
   

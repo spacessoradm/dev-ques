@@ -28,6 +28,16 @@ const adminNavBarItems = [
         icon: <FaUser />,
     },
     {
+        title: "Question Management",
+        link: "/admin/bookings",
+        icon: <FaUser />,
+    },
+    {
+        title: "Ques Selection",
+        link: "/admin/questionselect",
+        icon: <FaUser />,
+    },
+    {
         title: "Testimonial",
         link: "/admin/testimonials",
         icon: <FaUser />,

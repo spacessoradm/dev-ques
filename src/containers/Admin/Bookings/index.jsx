@@ -35,36 +35,21 @@ const Bookings = () => {
       const start = (pageNumber - 1) * limit;
       const end = start + limit - 1;
 
-      const { data: bookingList, error: bookingListError } = await supabase
-        .from('booking')
+      const { data: questionList, error: questionListError } = await supabase
+        .from('questions')
         .select('*')
         .range(start, end);
 
-      if (bookingListError){
-        showToast("Failed to fetch booking list. " + bookingListError , "error");
+      if (questionListError){
+        showToast("Failed to fetch question list. " + questionListError , "error");
       }
 
-      const { data: profileNameList, error: profileNameListError } = await supabase
-        .from('profiles')
-        .select('id, username');
 
-      if (profileNameListError){
-        showToast("Failed to fetch profile name list. " + profileNameListError , "error");
-      }
- 
-
-      bookingList.forEach(booking => {
-        const profile = profileNameList.find(prof => prof.id === booking.user_id);
-        if (profile) {
-          booking.username = profile.username;
-        }
-      });
-
-      setBookings(bookingList);
-      setFilteredBookings(bookingList);
-      setTotalPages(Math.ceil(bookingList.length / limit));
+      setBookings(questionList);
+      setFilteredBookings(questionList);
+      setTotalPages(Math.ceil(questionList.length / limit));
     } catch (error) {
-      showToast("Failed to fetch booking list. " + error , "error");
+      showToast("Failed to fetch question list. " + error , "error");
     } finally {
       setLoading(false);
     }
@@ -76,7 +61,7 @@ const Bookings = () => {
 
     if (term) {
       const filtered = bookings.filter((booking) =>
-        booking.username.toLowerCase().includes(term)
+        booking.question_text.toLowerCase().includes(term)
       );
       setFilteredBookings(filtered);
     } else {
@@ -139,8 +124,8 @@ const Bookings = () => {
 
   return (
     <div className='venue-category' style={{ fontFamily: "Courier New" }}>
-      <p className='title-page'>Booking Module</p>
-      <p className='subtitle-page'>Manage user booking here.</p>
+      <p className='title-page'>Question Management</p>
+      <p className='subtitle-page'>Manage all question here.</p>
 
       <SearchBar
         searchTerm={searchTerm}
@@ -166,19 +151,13 @@ const Bookings = () => {
                   onClick={() => handleSort("user")}
                   className='sort-header'
                 >
-                  User {sortConfig.key === "user" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                </th>
-                <th
-                  onClick={() => handleSort("checkin_date")}
-                  className='sort-header'
-                >
-                  CheckIn Date {sortConfig.key === "checkin_date" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                  Question Title {sortConfig.key === "user" && (sortConfig.direction === "asc" ? "↑" : "↓")}
                 </th>
                 <th
                   onClick={() => handleSort("booking_date")}
                   className='sort-header'
                 >
-                  Booking Date {sortConfig.key === "booking_date" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                  Created At {sortConfig.key === "booking_date" && (sortConfig.direction === "asc" ? "↑" : "↓")}
                 </th>
                 <th className='normal-header'>Actions</th>
               </tr>
@@ -187,25 +166,10 @@ const Bookings = () => {
               {filteredBookings.map((booking) => (
                 <tr key={booking.id}>
                   <td className='normal-column'>{booking.id}</td>
-                  <td className='normal-column'>{booking.username}</td>
-                  <td className='normal-column'>{new Date(booking.preferred_date).toLocaleDateString()}</td>
+                  <td className='normal-column'>{booking.question_text}</td>
                   <td className='normal-column'>{new Date(booking.created_at).toLocaleString()}</td>
                   <td className='action-column'>
-                    <FaEye
-                      onClick={() => navigate(`/admin/bookings/view/${booking.id}`)}
-                      title='View'
-                      className='view-button'
-                    />
-                    <FaEdit 
-                      onClick={() => navigate(`/admin/bookings/edit/${booking.id}`)}
-                      title='Edit'
-                      className='edit-button'
-                    />
-                    <FaTrashAlt 
-                      onClick={() => deleteBooking(booking.id)}
-                      title='Delete'
-                      className='delete-button'
-                    />
+
                   </td>
                 </tr>
               ))}
@@ -219,7 +183,7 @@ const Bookings = () => {
           />
         </>
       ) : (
-        !loading && <p>No Bookings found.</p>
+        !loading && <p>No Questions found.</p>
       )}
     </div>
   );
