@@ -1,5 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect, useState } from "react";
+import HomePage from './containers/Authentication/HomePage/index';
+import Demo from './containers/Authentication/HomePage/demo';
 import Login from './containers/Authentication/Login/index';
 import ForgetPassword from './containers/Authentication/ForgetPassword/index';
 import ResetPassword from './containers/Authentication/ResetPassword/index';
@@ -89,6 +91,8 @@ import CreateBlog from './containers/Admin/Blogs/CreateBlog';
 import ViewBlog from './containers/Admin/Blogs/ViewBlog';
 import EditBlog from './containers/Admin/Blogs/EditBlog';
 
+import Seq from './containers/Admin/Question_Select/index.jsx';
+
 import { AuthClient } from '@supabase/supabase-js';
 
 
@@ -131,6 +135,8 @@ const App = () => {
                     {/* Default Route */}
 
                     {/* Authentication Routes */}
+                    <Route path="/homepage" element={<HomePage />} />
+                    <Route path="/demo" element={<Demo />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/forgetpassword" element={<ForgetPassword />} />
                     <Route path="/resetpassword" element={<ResetPassword />} />
@@ -169,6 +175,15 @@ const App = () => {
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
                                         <EditUser />
+                                    </AdminLayout>
+                                }
+                            />
+
+                            <Route
+                                path="/admin/questionselect"
+                                element={
+                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
+                                        <Seq />
                                     </AdminLayout>
                                 }
                             />
