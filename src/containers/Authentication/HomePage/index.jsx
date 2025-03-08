@@ -5,9 +5,13 @@ import { ChevronDown, Check, ArrowUp } from "lucide-react"
 import './index.css'
 
 export default function HomePage() {
+  const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(true);
   const [plans, setPlans] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
     const fetchPlans = async () => {
@@ -32,7 +36,39 @@ export default function HomePage() {
     };
 
     fetchPlans();
+
+    // Check if user is logged in
+    const profileId = localStorage.getItem("profileId");
+    setIsLoggedIn(!!profileId);
+
+    const fetchCategories = async () => {
+      const { data, error } = await supabase
+        .from("tbl_sequence")
+        .select("category")
+        .neq("category", "Demo Question")
+        .order("category", { ascending: true });
+
+      if (error) {
+        console.error("Error fetching categories:", error);
+      } else {
+        setCategories(data);
+      }
+    };
+
+    if (profileId) {
+      fetchCategories();
+    }
   }, []);
+
+  const handleDropdownToggle = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleSignOut = () => {
+    localStorage.removeItem("profileId"); // Clear token
+    setIsLoggedIn(false);
+    window.location.href = "/"; // Redirect to homepage (optional)
+  };
 
   const handleAccept = () => {
     console.log("Button clicked! Hiding cookie notice...");
@@ -74,15 +110,66 @@ export default function HomePage() {
             <span className="text-gray-600">Resources</span>
             <ChevronDown className="h-4 w-4 ml-1 text-gray-600" />
           </div>
+          {isLoggedIn && (
+          <div className="nav-item relative">
+            <div
+              className="flex items-center cursor-pointer"
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            >
+              <span className="text-gray-600">Question Bank</span>
+              <ChevronDown
+                className={`h-4 w-4 ml-1 text-gray-600 transition-transform ${
+                  isDropdownOpen ? "rotate-180" : ""
+                }`}
+              />
+            </div>
+
+            {isDropdownOpen && (
+              <div className="dropdown-menu">
+                {categories.length > 0 ? (
+                  categories.map((item, index) => (
+                    <button
+                      key={index}
+                      onClick={() => navigate(`/Chiongster/questionbank/${item.category}`)}
+                      className="dropdown-item"
+                    >
+                      {item.category}
+                    </button>
+                  ))
+                ) : (
+                  <div className="dropdown-item text-gray-500">No categories</div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
         </nav>
 
         <div className="flex items-center space-x-4">
-          <a href="/quesbank/login" className="btn btn-outline">
+        {isLoggedIn ? (
+        <>
+          <a
+            href={isLoggedIn ? "admin/dashboard" : "#"}
+            className={`btn btn-primary ${!isLoggedIn ? "disabled-link" : ""}`}
+            aria-disabled={!isLoggedIn}
+            onClick={(e) => !isLoggedIn && e.preventDefault()} // Prevent navigation
+          >
+            Dashboard
+          </a>
+          <button onClick={handleSignOut} className="btn btn-outline">
+            Sign Out
+          </button>
+        </>
+      ) : (
+        <>
+          <a href="/Chiongster/login" className="btn btn-outline">
             Sign in
           </a>
           <a href="#" className="btn btn-primary">
             Book a demo
           </a>
+        </>
+      )}
         </div>
       </header>
 
@@ -98,10 +185,10 @@ export default function HomePage() {
             single, powerful web platform.
           </p>
           <div className="flex flex-col sm-flex-row gap-4">
-            <a href="#" className="btn btn-primary w-full sm-w-auto">
+            <a href="/Chiongster/demo" className="btn btn-primary w-full sm-w-auto">
               Book a demo
             </a>
-            <a href="/quesbank/demo" className="btn btn-outline w-full sm-w-auto">
+            <a href="/try" className="btn btn-outline w-full sm-w-auto">
               Try free
             </a>
           </div>

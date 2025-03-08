@@ -17,7 +17,8 @@ const QuestionDisplay = () => {
             // Fetch all sequence data
             let { data: sequenceData, error: sequenceError } = await supabase
                 .from("tbl_sequence")
-                .select("*");
+                .select("*")
+                .eq("category", "Demo Question");
     
             if (sequenceError) {
                 console.error("Error fetching sequence:", sequenceError);
@@ -121,7 +122,7 @@ const QuestionDisplay = () => {
 
     return (
         <div className="question-display-container" style={{ backgroundColor: "white", minHeight: "100vh", padding: "24px" }}>
-            <BackButton to="/quesbank/homepage" />
+            <BackButton to="/admin/bookings" />
             <div className="question-progress">
                 <ul className="progress-bar">
                     {questions.map((_, index) => {
