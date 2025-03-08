@@ -1,140 +1,199 @@
-import React, { useState, useEffect } from "react";
-import Select from "react-select";
-import { DndContext, closestCenter } from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-  arrayMove,
-  useSortable,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import supabase from "../../../config/supabaseClient";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import supabase from '../../../config/supabaseClient';
+import { FaEye, FaEdit, FaTrashAlt } from "react-icons/fa";
+import './index.css';
+import SearchBar from '../../../components/SearchBarSection';
+import Toast from '../../../components/Toast';
+import Pagination from '../../../components/pagination';
 
-const QuestionSequenceEditor = () => {
+const QuestionList = () => {
+  const navigate = useNavigate();
+
   const [questions, setQuestions] = useState([]);
-  const [selectedQuestions, setSelectedQuestions] = useState([]);
-  const [initialSequence, setInitialSequence] = useState([]);
+  const [filteredQuestions, setFilteredQuestions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortConfig, setSortConfig] = useState({ key: "category", direction: "asc" });
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 10;
+  const [toastInfo, setToastInfo] = useState({ visible: false, message: '', type: '' });
 
-  useEffect(() => {
-    const fetchQuestions = async () => {
-      const { data, error } = await supabase.from("questions").select("id, question_text");
-      if (error) console.error("Error fetching question:", error);
-      else setQuestions(data);
-    };
-    fetchQuestions();
-  }, []);
-
-  useEffect(() => {
-    const fetchSequence = async () => {
-      const { data, error } = await supabase
-        .from("tbl_sequence")
-        .select("sequence")
-        .eq("category", "demoQ")
-        .single();
-
-      if (error) {
-        console.error("Error fetching sequence:", error);
-      } else if (data) {
-        setInitialSequence(data.sequence || []);
-        setSelectedQuestions(
-          data.sequence.map((item) => ({
-            id: item.id,
-            question_text: questions.find((v) => v.id === item.id)?.question_text || "Unknown",
-            position: item.position,
-          }))
-        );
-      }
-    };
-
-    if (questions.length > 0) fetchSequence();
-  }, [questions]);
-
-  const handleSelectChange = (selectedOptions) => {
-    const newSelected = selectedOptions.map((option, index) => ({
-      id: option.value,
-      question_text: option.label,
-      position: index + 1,
-    }));
-
-    setSelectedQuestions(newSelected);
+  const showToast = (message, type) => {
+        setToastInfo({ visible: true, message, type });
+        setTimeout(() => setToastInfo({ visible: false, message: '', type: '' }), 3000); // Auto-hide
   };
 
-  const handleDragEnd = (event) => {
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
+  const fetchQuestionLists = async (pageNumber = 1) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const start = (pageNumber - 1) * limit;
+      const end = start + limit - 1;
 
-    const oldIndex = selectedQuestions.findIndex((item) => item.id === active.id);
-    const newIndex = selectedQuestions.findIndex((item) => item.id === over.id);
-    const newList = arrayMove(selectedQuestions, oldIndex, newIndex).map((item, index) => ({
-      ...item,
-      position: index + 1,
-    }));
+      const { data: questionListsData, error: questionListsError } = await supabase
+        .from('tbl_sequence')
+        .select('id, category, sequence, created_at')
+        .range(start, end);
 
-    setSelectedQuestions(newList);
+      if (questionListsError) throw questionListsError;
+
+      setQuestions(questionListsData);
+      setFilteredQuestions(questionListsData);
+      setTotalPages(Math.ceil(questionListsData.length / limit));
+    } catch (error) {
+      showToast("Failed to fetch question lists.", "error");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleSave = async () => {
-    const orderedData = selectedQuestions.map(({ id, position }) => ({ id, position }));
-    const category = "demoQ";
+  const handleSearch = (e) => {
+    const term = e.target.value.toLowerCase();
+    setSearchTerm(term);
 
-    const { error } = await supabase.from("tbl_sequence").upsert([
-      { category, sequence: orderedData },
-    ], { onConflict: ["category"] });
+    if (term) {
+      const filtered = questions.filter((question) =>
+        question.category.toLowerCase().includes(term)
+      );
+      setFilteredQuestions(filtered);
+    } else {
+      setFilteredQuestions(questions);
+    }
+  };
 
-    if (error) console.error("Error saving sequence:", error);
-    else alert("Saved!");
+  const handleSort = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+
+    fetchQuestionLists(page);
+  };
+
+  const handlePageChange = (newPage) => {
+    if (newPage > 0 && newPage <= totalPages) {
+      setPage(newPage);
+      fetchQuestionLists(newPage);
+    }
+  };
+
+  useEffect(() => {
+    fetchQuestionLists(page);
+  }, [page]);
+
+  const handleRefresh = () => fetchQuestionLists(page);
+
+  const handleCreate = () => navigate("create");
+
+  const deleteList = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this question list?");
+    if (!confirmDelete) return;
+
+    try {
+      setLoading(true);
+
+      const { error } = await supabase
+        .from('tbl_sequence')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setQuestions((prevQuestionLists) => prevQuestionLists.filter((questionlist) => questionlist.id !== id));
+      setFilteredQuestions((prevFilteredQuestionLists) =>
+        prevFilteredQuestionLists.filter((questionlist) => questionlist.id !== id)
+      );
+
+      showToast("List deleted successfully.", "success");
+    } catch (err) {
+      showToast("Failed to delete list.", "error");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div>
-      <h2>Question Editor</h2>
+    <div className='whole-page'>
+      <p className='title-page'>Question List Management</p>
+      <p className='subtitle-page'>Manage your question lists here.</p>
 
-      <Select
-        options={questions.map((question) => ({ value: question.id, label: question.question_text }))}
-        isMulti
-        onChange={handleSelectChange}
-        placeholder="Select question..."
-        value={selectedQuestions.map((v) => ({ value: v.id, label: v.question_text }))}
+      <SearchBar
+        searchTerm={searchTerm}
+        onSearch={handleSearch}
+        onRefresh={handleRefresh}
+        onCreate={handleCreate}
       />
 
-      <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <SortableContext items={selectedQuestions.map((v) => v.id)} strategy={verticalListSortingStrategy}>
-          <ul style={{ listStyle: "none", padding: 0 }}>
-            {selectedQuestions.map((question) => (
-              <SortableItem key={question.id} question={question} />
-            ))}
-          </ul>
-        </SortableContext>
-      </DndContext>
+      {loading && <p>Loading question list...</p>}
 
-      <button onClick={handleSave} style={{ marginTop: "10px" }}>
-        Save
-      </button>
+      {toastInfo.visible && (
+        <Toast message={toastInfo.message} type={toastInfo.type} />
+      )}
+
+      {!loading && !error && filteredQuestions.length > 0 ? (
+        <>
+          <table className='table-container'>
+            <thead>
+              <tr className='header-row'>
+                <th className='normal-header'>ID</th>
+                <th
+                  onClick={() => handleSort("category")}
+                  className='sort-header'
+                >
+                  Category Name {sortConfig.key === "category" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </th>
+                <th
+                  onClick={() => handleSort("created_at")}
+                  className='sort-header'
+                >
+                  Created At {sortConfig.key === "created_at" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </th>
+                <th className='normal-header'>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredQuestions.map((list) => (
+                <tr key={list.id}>
+                  <td className='normal-column'>{list.id}</td>
+                  <td className='normal-column'>{list.category}</td>
+                  <td className='normal-column'>{list.created_at}</td>
+                  <td className='action-column'>
+                    <FaEye
+                      onClick={() => navigate(`/admin/questionselect/view/${list.id}`)}
+                      title='View'
+                      className='view-button'
+                    />
+                    <FaEdit 
+                      onClick={() => navigate(`/admin/questionselect/edit/${list.id}`)}
+                      title='Edit'
+                      className='edit-button'
+                    />
+                    <FaTrashAlt 
+                      onClick={() => deleteList(list.id)}
+                      title='Delete'
+                      className='delete-button'
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </>
+      ) : (
+        !loading && <p>No question list found.</p>
+      )}
     </div>
   );
-};
+}; 
 
-const SortableItem = ({ question }) => {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: question.id });
-
-  const style = {
-    padding: "10px",
-    margin: "5px 0",
-    backgroundColor: "#f0f0f0",
-    border: "1px solid #ccc",
-    cursor: "grab",
-    display: "flex",
-    alignItems: "center",
-    gap: "10px",
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
-  return (
-    <li ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <strong>{question.position}.</strong> {question.question_text}
-    </li>
-  );
-};
-
-export default QuestionSequenceEditor;
+export default QuestionList;
