@@ -162,11 +162,6 @@ const QuestionList = () => {
                   <td className='normal-column'>{list.category}</td>
                   <td className='normal-column'>{list.created_at}</td>
                   <td className='action-column'>
-                    <FaEye
-                      onClick={() => navigate(`/admin/questionselect/view/${list.id}`)}
-                      title='View'
-                      className='view-button'
-                    />
                     <FaEdit 
                       onClick={() => navigate(`/admin/questionselect/edit/${list.id}`)}
                       title='Edit'
