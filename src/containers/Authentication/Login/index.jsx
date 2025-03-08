@@ -78,7 +78,10 @@ const Login = () => {
             if (roleName === 'admin') {
                 console.log('Im here');
                 navigate('/admin/dashboard');
-            } else {
+            } else if(roleName === 'user') {
+                navigate('/homepage');
+            }
+            else {
                 showToast(`Unknown role: ${roleName}`, 'error')
             }
 
