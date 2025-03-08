@@ -219,16 +219,7 @@ const CreateBooking = () => {
                 )}
 
                 {questionType === "trueFalse" && (
-                    <SingleSelect
-                        label="Answer"
-                        value={answer}
-                        onChange={(e) => setAnswer(e.target.value)}
-                        options={[
-                            { label: "True", value: "true" },
-                            { label: "False", value: "false" }
-                        ]}
-                        required
-                    />
+                    <></>
                 )}
 
                 <PlainInput
