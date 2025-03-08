@@ -194,12 +194,7 @@ const CreateBooking = () => {
                 />
 
                 {questionType === "subjective" && (
-                    <TextArea
-                        label="Answer"
-                        value={answer}
-                        onChange={(e) => setAnswer(e.target.value)}
-                        required
-                    />
+                    <></>
                 )}
 
                 {(questionType === "single" || questionType === "multiple") && (
@@ -236,7 +231,15 @@ const CreateBooking = () => {
                     />
                 )}
 
-<div className="field-container">
+                <PlainInput
+                    label="Correct Answer"
+                    type="text"
+                    value={answer}
+                    onChange={(e) => setAnswer(e.target.value)}
+                    required
+                />
+
+                <div className="field-container">
                         <label>Explanation:</label>
                         <ReactQuill
                             theme="snow"
@@ -262,7 +265,7 @@ const CreateBooking = () => {
                             ]}
                             className="enhanced-input"
                         />
-                    </div>
+                </div>
 
                 <button type="submit" className="submit-btn" disabled={loading}>
                     {loading ? 'Creating...' : 'Create'}
