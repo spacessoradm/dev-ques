@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import HomePage from './containers/Authentication/HomePage/index';
 import Demo from './containers/Authentication/HomePage/demo';
+import QuestionBank from './containers/Authentication/HomePage/questionbank';
 import Login from './containers/Authentication/Login/index';
 import ForgetPassword from './containers/Authentication/ForgetPassword/index';
 import ResetPassword from './containers/Authentication/ResetPassword/index';
@@ -91,7 +92,9 @@ import CreateBlog from './containers/Admin/Blogs/CreateBlog';
 import ViewBlog from './containers/Admin/Blogs/ViewBlog';
 import EditBlog from './containers/Admin/Blogs/EditBlog';
 
-import Seq from './containers/Admin/Question_Select/index.jsx';
+import CreateQuestionList from './containers/Admin/Question_Select/CreateQuestionList.jsx';
+import EditQuestionList from './containers/Admin/Question_Select/EditQuestionList.jsx';
+import QuestionList from './containers/Admin/Question_Select/index.jsx';
 
 import { AuthClient } from '@supabase/supabase-js';
 
@@ -137,10 +140,16 @@ const App = () => {
                     {/* Authentication Routes */}
                     <Route path="/homepage" element={<HomePage />} />
                     <Route path="/demo" element={<Demo />} />
+                    <Route path="/Chiongster/questionbank/:categoryParam" element={<QuestionBank />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/forgetpassword" element={<ForgetPassword />} />
                     <Route path="/resetpassword" element={<ResetPassword />} />
                     <Route path="/signup" element={<Signup />} />
+
+                    {uR === "user" && (
+                        <>
+                        </>
+                    )}
 
                     {/* Admin Routes */}
                     {uR === "admin" && (
@@ -180,10 +189,28 @@ const App = () => {
                             />
 
                             <Route
+                                path="/admin/questionselect/edit/:id"
+                                element={
+                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
+                                        <EditQuestionList />
+                                    </AdminLayout>
+                                }
+                            />
+
+                            <Route
+                                path="/admin/questionselect/create"
+                                element={
+                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
+                                        <CreateQuestionList />
+                                    </AdminLayout>
+                                }
+                            />
+
+                            <Route
                                 path="/admin/questionselect"
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <Seq />
+                                        <QuestionList />
                                     </AdminLayout>
                                 }
                             />
