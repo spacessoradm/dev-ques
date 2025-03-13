@@ -1,6 +1,6 @@
 import "./index.css";
 
-const PlainInput = ({ label, value, onChange, type = "text", required = false, readOnly = false, hidden = false }) => {
+const PlainInput = ({ label, value, onChange, type = "text", required = false, readOnly = false, disabled = false, hidden = false }) => {
     return (
         <div className="field-container" hidden={hidden}>
             <label>{label}</label>
@@ -11,6 +11,7 @@ const PlainInput = ({ label, value, onChange, type = "text", required = false, r
                 onChange={onChange}
                 required={required}
                 readOnly={readOnly}
+                disabled={disabled}
             />
         </div>
     );

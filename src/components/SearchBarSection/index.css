@@ -21,6 +21,13 @@
     font-family: 'Courier New', Courier, monospace;
   }
 
+  .sort-button {
+    font-size: 30px;
+    color: #004C4C;
+    cursor: pointer;
+    transition: transform 0.3s;
+  }
+
   .refresh-button {
     font-size: 30px;
     color: #4CAF50;

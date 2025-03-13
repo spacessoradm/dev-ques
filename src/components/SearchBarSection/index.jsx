@@ -1,8 +1,9 @@
 import React from 'react';
 import { FaSyncAlt, FaPlus } from 'react-icons/fa';
+import { ArrowDownUp } from 'lucide-react';
 import './index.css'; // Assuming styles are shared
 
-const SearchBar = ({ searchTerm, onSearch, onRefresh, onCreate }) => {
+const SearchBar = ({ searchTerm, onSearch, onSort, onRefresh, onCreate }) => {
   return (
     <div className='search-bar'>
       <input
@@ -13,6 +14,12 @@ const SearchBar = ({ searchTerm, onSearch, onRefresh, onCreate }) => {
         onChange={onSearch}
       />
       <div className='button-container'>
+        <ArrowDownUp
+          onClick={onSort} // ✅ Ensure this is passed correctly from props
+          className="sort-button"
+          title="Sort"
+          style={{ cursor: "pointer", width: '30px', height: '30px' }}
+        />
         <FaSyncAlt
           onClick={onRefresh}
           onMouseOver={(e) => (e.target.style.transform = "rotate(90deg)")}

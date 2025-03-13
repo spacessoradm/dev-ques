@@ -11,7 +11,7 @@ const SingleSelect = ({
     readOnly = false 
 }) => {
     return (
-        <div className="field-container">
+        <div className="" style={{paddingTop: '20px'}}>
             <label>{label}</label>
             <Select
                 value={options.find(option => option.value === selectedValue)}
@@ -20,7 +20,6 @@ const SingleSelect = ({
                 placeholder={placeholder}
                 isDisabled={readOnly} // Disables selection if readOnly is true
                 isClearable={!required} // Allow clearing selection if not required
-                className="enhanced-input"
             />
         </div>
     );
