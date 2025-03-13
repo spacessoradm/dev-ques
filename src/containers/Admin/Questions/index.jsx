@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import supabase from '../../../config/supabaseClient';
-import { FaEye, FaPlus, FaEdit, FaTrashAlt } from "react-icons/fa";
+import { FaEye, FaPlus, FaEdit, FaTrashAlt, FaEllipsisV } from "react-icons/fa";
 
 import './index.css';
 import SearchBar from '../../../components/SearchBarSection';
@@ -17,13 +17,19 @@ const Questions = () => {
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [filteredQuestions, setFilteredQuestions] = useState([]);
+  const [correctAnswer, setCorrectAnswer] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState({ key: "id", direction: "asc" });
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const limit = 20;
+  const limit = 10;
   const [toastInfo, setToastInfo] = useState({ visible: false, message: '', type: '' });
+  const [menuOpen, setMenuOpen] = useState(null);
+
+  const toggleMenu = (id) => {
+    setMenuOpen(menuOpen === id ? null : id);
+  };
 
   const showToast = (message, type) => {
     setToastInfo({ visible: true, message, type });
@@ -96,6 +102,24 @@ const Questions = () => {
       setLoading(false);
     }
   };
+
+  const getCorrectAnswerText = (optionsString, correctAnswer) => {
+    if (!optionsString || !correctAnswer) return "Invalid Answer";
+  
+    try {
+      // ✅ Parse the JSON string to an array
+      const options = JSON.parse(optionsString);
+      
+      if (!Array.isArray(options)) return "Invalid Answer";
+  
+      // ✅ Convert "A" -> 0, "B" -> 1, etc.
+      const index = correctAnswer.charCodeAt(0) - 65;
+  
+      return options[index] || "Invalid Answer"; // Fallback if index is out of range
+    } catch (error) {
+      return "Invalid Answer"; // In case JSON parsing fails
+    }
+  };
   
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
@@ -125,18 +149,24 @@ const Questions = () => {
   };
 
   const handleSearch = (event) => {
-    const searchValue = event.target.value; // Get the input value
-  
+    const searchValue = event.target.value.toLowerCase().trim();
     setSearchTerm(searchValue);
   
-    if (searchValue.trim() === "") {
+    if (!searchValue) {
       setFilteredQuestions(questions);
-    } else {
-      const filtered = questions.filter((q) =>
-        q.question_text?.toLowerCase().includes(searchValue.toLowerCase())
-      );
-      setFilteredQuestions(filtered);
+      return;
     }
+  
+    const filtered = questions.filter((q) => {
+      const questionText = q.question_text?.toLowerCase() || "";
+      const answerText = q.correct_answer && q.options
+        ? getCorrectAnswerText(q.options, q.correct_answer).toLowerCase()
+        : "";
+  
+      return questionText.includes(searchValue) || answerText.includes(searchValue);
+    });
+  
+    setFilteredQuestions(filtered);
   };
   
   const handleRefresh = () => {
@@ -149,10 +179,10 @@ const Questions = () => {
   const handleCreate = () => {
     if(parentId == '3'){
       console.log(selectedSubcategory)
-      navigate(`/admin/bookings/create/${selectedSubcategory}`);
+      navigate(`/admin/questions/create/${selectedSubcategory}`);
     } else {
       console.log(selectedSubcategory)
-      navigate(`/admin/bookings/createphysic/${selectedSubcategory}`)
+      navigate(`/admin/questions/createphysic/${selectedSubcategory}`)
     }
   };
 
@@ -217,13 +247,14 @@ const Questions = () => {
 
       </div>
 
-      <div className='venue-category'>
+      <div className='question-tab' style={{ padding: "12px", width: "75%"}}>
         <p className='title-page'>Question Management</p>
         <p className='subtitle-page'>Manage all questions here.</p>
 
         <SearchBar
           searchTerm={searchTerm}
           onSearch={(event) => handleSearch(event)}
+          onSort={() => handleSort("sub_category")}
           onRefresh={handleRefresh}
           onCreate={handleCreate}
         />
@@ -236,46 +267,64 @@ const Questions = () => {
             <table className='table-container'>
               <thead>
                 <tr className='header-row'>
-                  <th className='normal-header'>Question</th>
+                  <th className='normal-header'>Details</th>
                   <th
-                    onClick={() => handleSort("sub_category")}
-                    className='sort-header'
+                    className='hidden-column'
                   >
                     Sub Category {sortConfig.key === "sub_category" && (sortConfig.direction === "asc" ? "↑" : "↓")}
                   </th>
-                  <th className='normal-header'> Actions </th>
+                  <th className='normal-header'>Actions </th>
                 </tr>
               </thead>
               <tbody>
                 {filteredQuestions.map((question) => (
                   <tr key={question.id}>
-                    <td className='normal-column'>
-                      {question.question_text.length > 50 
-                        ? question.question_text.substring(0, 50) + "..." 
-                        : question.question_text}
+                    <td className='question-column'>
+                      <div>
+                        <label>Code: </label>
+                        {question.unique_code}
+                      </div>
+                      <div>
+                        <label>Sub Category: </label>
+                        {question.sub_category}
+                      </div>
+                      <div>
+                        <label>Question: </label>
+                        {question.question_text.length > 50 
+                          ? question.question_text.substring(0, 50) + "..." 
+                          : question.question_text}
+                      </div>
+                      {question.correct_answer && (
+                        <div>
+                          <label>Answer: </label>
+                          {getCorrectAnswerText(question.options, question.correct_answer)}
+                        </div>
+                      )}
                     </td>
-                    <td className='normal-column'>{question.sub_category}</td>
-                    <td className='action-column'>
-                      <FaEye 
-                        onClick={() => {
-                          const path = parentId === '3' 
-                            ? `/admin/bookings/preview/${question.id}` 
-                            : `/admin/bookings/previewphysic/${question.id}`;
-                          navigate(path);
-                        }} 
-                        title='Preview'
-                        className='view-button'
-                      />
-                      <FaEdit 
-                        onClick={() => navigate(`/admin/bookings/edit/${question.id}`)} 
-                        title='Edit'
-                        className='edit-button'
-                      />
-                      <FaTrashAlt 
-                        onClick={() => handleDelete(question.id)} 
-                        title='Delete'
-                        className='delete-button'
-                      />
+                    <td className='hidden-column'>{question.sub_category}</td>
+                    {/* Action Menu */}
+                    <td className="action-menu">
+                      <FaEllipsisV className="menu-icon" onClick={() => toggleMenu(question.id)} />
+
+                      {menuOpen === question.id && (
+                        <div className="menu-dropdown">
+                          <button 
+                            className="menu-item view" 
+                            onClick={() => navigate(`/admin/bookings/preview/${question.id}`)}>
+                              <FaEye /> View
+                          </button>
+                          <button 
+                            className="menu-item edit" 
+                            onClick={() => navigate(`/admin/bookings/edit/${question.id}`)}>
+                              <FaEdit /> Edit
+                          </button>
+                          <button 
+                            className="menu-item delete" 
+                            onClick={() => handleDelete(question.id)}>
+                              <FaTrashAlt /> Delete
+                          </button>
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))}
