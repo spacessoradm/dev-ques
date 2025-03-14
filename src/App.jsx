@@ -40,10 +40,16 @@ import EditMenu from './containers/Admin/Venues/EditMenu';
 import EditVenueRedeemItem from './containers/Admin/Venues/EditRedeemItem';
 
 import Bookings from './containers/Admin/Bookings/index.jsx';
-import CreateBooking from './containers/Admin/Bookings/CreateBooking';
-import ViewBooking from './containers/Admin/Bookings/ViewBooking';
-import EditBooking from './containers/Admin/Bookings/EditBooking';
-import EditRedemption from './containers/Admin/Bookings/EditRedemption';
+import PreviewQuestion from './containers/Admin/Bookings/PreviewQuestion.jsx';
+import PreviewPhysicQuestion from './containers/Admin/Bookings/PreviewPhysicQuestion.jsx';
+import CreateQuestion from './containers/Admin/Bookings/CreateQuestion.jsx';
+import CreatePhysicQuestion from './containers/Admin/Bookings/CreatePhysicQuestion.jsx';
+import EditQuestion from './containers/Admin/Bookings/EditQuestion.jsx';
+import EditPhysicQuestion from './containers/Admin/Bookings/EditPhysicQuestion.jsx';
+
+import Questions from './containers/Admin/Questions/index.jsx';
+import CreateQues from './containers/Admin/Questions/CreateQuestion.jsx';
+import CreatePhysicsQues from './containers/Admin/Questions/CreatePhysicQuestion.jsx';
 
 import Banners from './containers/Admin/Banners/index.jsx';
 import CreateBanner from './containers/Admin/Banners/CreateBanner';
@@ -67,6 +73,10 @@ import QuestionCategory from './containers/Admin/Question_Category/index.jsx';
 import CreateQuestionCategory from './containers/Admin/Question_Category/CreateQuestionCategory.jsx';
 import ViewQuestionCategory from './containers/Admin/Question_Category/ViewQuestionCategory.jsx';
 import EditQuestionCategory from './containers/Admin/Question_Category/EditQuestionCategory.jsx';
+
+import QuestionSubCategory from './containers/Admin/QuestionSubCategory/index.jsx';
+import CreateQuestionSubCategory from './containers/Admin/QuestionSubCategory/CreateQuestionSubCategory.jsx';
+import EditQuestionSubCategory from './containers/Admin/QuestionSubCategory/EditQuestionSubCategory.jsx';
 
 import Testimonials from './containers/Admin/Testimonials/index.jsx';
 import CreateTestimonial from './containers/Admin/Testimonials/CreateTestimonial.jsx';
@@ -140,7 +150,7 @@ const App = () => {
                     {/* Authentication Routes */}
                     <Route path="/homepage" element={<HomePage />} />
                     <Route path="/demo" element={<Demo />} />
-                    <Route path="/quesbank/questionbank/:categoryParam" element={<QuestionBank />} />
+                    <Route path="/Chiongster/questionbank/:categoryParam" element={<QuestionBank />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/forgetpassword" element={<ForgetPassword />} />
                     <Route path="/resetpassword" element={<ResetPassword />} />
@@ -184,6 +194,33 @@ const App = () => {
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
                                         <EditUser />
+                                    </AdminLayout>
+                                }
+                            />
+
+                            <Route
+                                path="/admin/questions/:category"
+                                element={
+                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
+                                        <Questions />
+                                    </AdminLayout>
+                                }
+                            />
+
+                            <Route
+                                path="/admin/questions/create/:subCategoryName"
+                                element={
+                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
+                                        <CreateQues />
+                                    </AdminLayout>
+                                }
+                            />
+
+                            <Route
+                                path="/admin/questions/createphysic/:subCategoryName"
+                                element={
+                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
+                                        <CreatePhysicsQues />
                                     </AdminLayout>
                                 }
                             />
@@ -244,6 +281,31 @@ const App = () => {
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
                                         <EditQuestionCategory/>
+                                    </AdminLayout>
+                                }
+                            />
+
+                            <Route
+                                path="/admin/questionsubcategory"
+                                element={
+                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
+                                        <QuestionSubCategory />
+                                    </AdminLayout>
+                                }
+                            />
+                            <Route
+                                path="/admin/questionsubcategory/create"
+                                element={
+                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
+                                        <CreateQuestionSubCategory />
+                                    </AdminLayout>
+                                }
+                            />
+                            <Route
+                                path="/admin/questionsubcategory/edit/:id"
+                                element={
+                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
+                                        <EditQuestionSubCategory/>
                                     </AdminLayout>
                                 }
                             />
@@ -419,26 +481,46 @@ const App = () => {
                             />
 
                             <Route
-                                path="/admin/bookings"
+                                path="/admin/bookings/:category"
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
                                         <Bookings />
                                     </AdminLayout>
                                 }
                             />
+
                             <Route
-                                path="/admin/bookings/create"
+                                path="/admin/bookings/preview/:id"
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <CreateBooking />
+                                        <PreviewQuestion />
                                     </AdminLayout>
                                 }
                             />
-                            <Route
-                                path="/admin/bookings/view/:id"
+
+<Route
+                                path="/admin/bookings/previewphysic/:id"
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <ViewBooking/>
+                                        <PreviewPhysicQuestion />
+                                    </AdminLayout>
+                                }
+                            />
+
+                            <Route
+                                path="/admin/bookings/create/:subCategoryName"
+                                element={
+                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
+                                        <CreateQuestion />
+                                    </AdminLayout>
+                                }
+                            />
+
+                            <Route
+                                path="/admin/bookings/createphysic/:subCategoryName"
+                                element={
+                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
+                                        <CreatePhysicQuestion />
                                     </AdminLayout>
                                 }
                             />
@@ -446,16 +528,16 @@ const App = () => {
                                 path="/admin/bookings/edit/:id"
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <EditBooking/>
+                                        <EditQuestion/>
                                     </AdminLayout>
                                 }
                             />
 
                             <Route
-                                path="/admin/bookings/editredemption/:id"
+                                path="/admin/bookings/editphysic/:id"
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <EditRedemption/>
+                                        <EditPhysicQuestion/>
                                     </AdminLayout>
                                 }
                             />
