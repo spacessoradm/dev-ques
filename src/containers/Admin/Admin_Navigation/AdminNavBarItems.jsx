@@ -20,31 +20,31 @@ const adminNavBarItems = [
     {
         title: "Users",
         link: "/admin/user",
-        icon: <FaUser />,
     },
     {
         title: "Blogs",
         link: "/admin/blogs",
-        icon: <FaUser />,
     },
     {
-        title: "Question Management",
-        link: "/admin/bookings",
-        icon: <FaUser />,
-    },
-    {
-        title: "Ques Selection",
-        link: "/admin/questionselect",
-        icon: <FaUser />,
+        title: "Question Management 2",
+        dropdown: true,
+        items: [
+            {
+                title: "Part 2A",
+                link: "/admin/questions/2A",
+            },
+            {
+                title: "Physic",
+                link: "/admin/questions/Physics",
+            },
+        ]
     },
     {
         title: "Testimonial",
         link: "/admin/testimonials",
-        icon: <FaUser />,
     },
     {
         title: "Settings",
-        icon: <FaCog />,
         dropdown: true, // Indicates dropdown
         items: [
             {
@@ -65,6 +65,11 @@ const adminNavBarItems = [
             {
                 title: "Question Category Management",
                 link: "/admin/questioncategory",
+                icon: <FaListAlt />,
+            },
+            {
+                title: "Question Sub-Category Management",
+                link: "/admin/questionsubcategory",
                 icon: <FaListAlt />,
             },
             {

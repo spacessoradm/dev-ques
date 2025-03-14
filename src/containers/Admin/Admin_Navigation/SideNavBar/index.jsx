@@ -57,7 +57,7 @@ const SideNavBar = ({ isCollapsed, toggleSidebar }) => {
             {/* Navigation Items */}
             {}
 
-<ul className="side-nav-items">
+            <ul className="side-nav-items">
                 {adminNavBarItems.map((item, index) => (
                     <li key={index} className="side-nav-item">
                         {item.dropdown ? (
@@ -75,7 +75,7 @@ const SideNavBar = ({ isCollapsed, toggleSidebar }) => {
                                             }
                                         >
                                             <div className="nav-icon">{item.icon}</div>
-                                            <span className="nav-title">{item.title}</span>
+                                            <span className="nav-title" style={{fontFamily: 'Poppins' , fontSize: '14px'}}>{item.title}</span>
                                         </NavLink>
                                     ) : (
                                         <div
@@ -83,7 +83,7 @@ const SideNavBar = ({ isCollapsed, toggleSidebar }) => {
                                             className="dropdown-toggle"
                                         >
                                             <div className="nav-icon">{item.icon}</div>
-                                            <span className="nav-title">{item.title}</span>
+                                            <span className="nav-title" style={{fontFamily: 'Poppins', fontSize: '14px'}}>{item.title}</span>
                                         </div>
                                     )}
                                     
@@ -98,9 +98,9 @@ const SideNavBar = ({ isCollapsed, toggleSidebar }) => {
                                         }}
                                         >
                                         {expandedDropdown[index] ? (
-                                            <FaAngleUp />
+                                            <FaAngleUp style={{fontSize: '14px'}} />
                                         ) : (
-                                            <FaChevronDown />
+                                            <FaChevronDown style={{fontSize: '14px'}} />
                                         )}
                                     </div>
                                       {/* {expandedDropdown[index] ? (
@@ -179,7 +179,7 @@ const SideNavBar = ({ isCollapsed, toggleSidebar }) => {
                                 className={({ isActive }) => (isActive ? "active" : "")}
                             >
                                 <div className="nav-icon">{item.icon}</div>
-                                <span className="nav-title">{item.title}</span>
+                                <span className="nav-title" style={{fontFamily: 'Poppins' , fontSize: '14px'}}>{item.title}</span>
                             </NavLink>
                         )}
                     </li>
