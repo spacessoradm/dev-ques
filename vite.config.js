@@ -35,6 +35,9 @@ export default defineConfig({
           },
         ],
       },
+      workbox: {
+        maximumFileSizeToCacheInBytes: 4000000, // 4 MB limit (adjust if needed)
+      },
     }),
   ],
   base: '/', // Ensure this matches your repository name
