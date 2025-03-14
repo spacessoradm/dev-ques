@@ -150,7 +150,7 @@ const App = () => {
                     {/* Authentication Routes */}
                     <Route path="/homepage" element={<HomePage />} />
                     <Route path="/demo" element={<Demo />} />
-                    <Route path="/Chiongster/questionbank/:categoryParam" element={<QuestionBank />} />
+                    <Route path="/Quesbank/questionbank/:categoryParam" element={<QuestionBank />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/forgetpassword" element={<ForgetPassword />} />
                     <Route path="/resetpassword" element={<ResetPassword />} />
