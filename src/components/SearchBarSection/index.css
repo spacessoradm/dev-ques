@@ -18,25 +18,25 @@
     border: 1px solid #ccc;
     width: 100%;
     max-width: 400px;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: 'Poppins', sans-serif;
   }
 
   .sort-button {
-    font-size: 30px;
+    font-size: 26px;
     color: #004C4C;
     cursor: pointer;
     transition: transform 0.3s;
   }
 
   .refresh-button {
-    font-size: 30px;
-    color: #4CAF50;
+    font-size: 26px;
+    color: #004C4C;
     cursor: pointer;
     transition: transform 0.3s;
   }
 
   .create-button {
-    font-size: 30px;
-    color: #4CAF50;
+    font-size: 26px;
+    color: #004C4C !important;
     cursor: pointer;
   }

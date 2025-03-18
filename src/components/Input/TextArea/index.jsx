@@ -2,7 +2,7 @@ import "./index.css";
 
 const TextArea = ({ label, value, onChange, rows = 3, required = false, readOnly = false }) => {
     return (
-        <div className="field-container">
+        <div className="">
             <label>{label}</label>
             <textarea
                 className="enhanced-input"
