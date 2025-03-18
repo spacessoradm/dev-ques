@@ -50,6 +50,7 @@ import EditPhysicQuestion from './containers/Admin/Bookings/EditPhysicQuestion.j
 import Questions from './containers/Admin/Questions/index.jsx';
 import CreateQues from './containers/Admin/Questions/CreateQuestion.jsx';
 import CreatePhysicsQues from './containers/Admin/Questions/CreatePhysicQuestion.jsx';
+import ModuleRunningNo from './containers/Admin/Questions/RunningNumbersPopup.jsx';
 
 import Banners from './containers/Admin/Banners/index.jsx';
 import CreateBanner from './containers/Admin/Banners/CreateBanner';
@@ -73,10 +74,10 @@ import QuestionCategory from './containers/Admin/Question_Category/index.jsx';
 import CreateQuestionCategory from './containers/Admin/Question_Category/CreateQuestionCategory.jsx';
 import ViewQuestionCategory from './containers/Admin/Question_Category/ViewQuestionCategory.jsx';
 import EditQuestionCategory from './containers/Admin/Question_Category/EditQuestionCategory.jsx';
+import CreateQuestionSubCategory from './containers/Admin/Question_Category/CreateQuestionSubCategory.jsx';
+import EditQuestionSubCategory from './containers/Admin/Question_Category/EditQuestionSubCategory.jsx';
 
 import QuestionSubCategory from './containers/Admin/QuestionSubCategory/index.jsx';
-import CreateQuestionSubCategory from './containers/Admin/QuestionSubCategory/CreateQuestionSubCategory.jsx';
-import EditQuestionSubCategory from './containers/Admin/QuestionSubCategory/EditQuestionSubCategory.jsx';
 
 import Testimonials from './containers/Admin/Testimonials/index.jsx';
 import CreateTestimonial from './containers/Admin/Testimonials/CreateTestimonial.jsx';
@@ -104,7 +105,12 @@ import EditBlog from './containers/Admin/Blogs/EditBlog';
 
 import CreateQuestionList from './containers/Admin/Question_Select/CreateQuestionList.jsx';
 import EditQuestionList from './containers/Admin/Question_Select/EditQuestionList.jsx';
-import QuestionList from './containers/Admin/Question_Select/index.jsx';
+import QuestionList from './containers/Admin/Question_Select/QuestionList.jsx';
+
+
+import RunningNumbers from './containers/Admin/Running_Numbers/index.jsx';
+import CreateRunningNumber from './containers/Admin/Running_Numbers/CreateRunningNumber';
+import EditRunningNumber from './containers/Admin/Running_Numbers/EditRunningNumber';
 
 import { AuthClient } from '@supabase/supabase-js';
 
@@ -150,7 +156,7 @@ const App = () => {
                     {/* Authentication Routes */}
                     <Route path="/homepage" element={<HomePage />} />
                     <Route path="/demo" element={<Demo />} />
-                    <Route path="/Quesbank/questionbank/:categoryParam" element={<QuestionBank />} />
+                    <Route path="/Chiongster/questionbank/:categoryParam" element={<QuestionBank />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/forgetpassword" element={<ForgetPassword />} />
                     <Route path="/resetpassword" element={<ResetPassword />} />
@@ -244,7 +250,7 @@ const App = () => {
                             />
 
                             <Route
-                                path="/admin/questionselect"
+                                path="/admin/questionselect/list"
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
                                         <QuestionList />
@@ -735,6 +741,33 @@ const App = () => {
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
                                         <EditPlan/>
+                                    </AdminLayout>
+                                }
+                            />
+
+                            <Route 
+                                path="/admin/questions/modulerunningno"
+                                element={
+                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
+                                        <ModuleRunningNo />
+                                    </AdminLayout>
+                                }
+                            />
+
+                            <Route
+                                path="/admin/runningnumbers/create"
+                                element={
+                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
+                                        <CreateRunningNumber/>
+                                    </AdminLayout>
+                                }
+                            />
+
+                            <Route
+                                path="/admin/runningnumbers/edit/:id"
+                                element={
+                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
+                                        <EditRunningNumber/>
                                     </AdminLayout>
                                 }
                             />
