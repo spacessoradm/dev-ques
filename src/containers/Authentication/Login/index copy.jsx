@@ -7,7 +7,7 @@ import Toast from '../../../components/Toast';
 
 const Login = () => {
     const navigate = useNavigate();
-    // { updateUserRole } = useAuth();
+    const { updateUserRole } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -48,7 +48,7 @@ const Login = () => {
             const { data: adminProfileData, error: adminProfileError } = await supabase
                 .from('profiles')
                 .select('id, role_id')
-                .eq('user_id', data.user.id)
+                .eq('unique_id', data.user.id)
                 .single();
 
             if (adminProfileError) {
@@ -58,7 +58,7 @@ const Login = () => {
 
             const { data: roleData, error: roleNameError } = await supabase
                 .from('roles')
-                .select('name')
+                .select('role_name')
                 .eq('id', adminProfileData.role_id)
                 .single();
 
@@ -67,21 +67,12 @@ const Login = () => {
                 throw roleNameError;
             }
 
-            const roleName = roleData?.name.trim().toLowerCase() || 'Unknown';
-            //updateUserRole(roleName);
-
-            localStorage.setItem('role', roleName);
-            localStorage.setItem('profileId', adminProfileData.id);
-            localStorage.setItem('userName', adminProfileData.username);
-            localStorage.setItem('token', data.session.access_token);
+            const roleName = roleData?.role_name.trim().toLowerCase() || 'Unknown';
+            updateUserRole(roleName);
 
             if (roleName === 'admin') {
-                console.log('Im here');
                 navigate('/admin/dashboard');
-            } else if(roleName === 'user') {
-                navigate('/homepage');
-            }
-            else {
+            } else {
                 showToast(`Unknown role: ${roleName}`, 'error')
             }
 
@@ -108,13 +99,8 @@ const Login = () => {
 
             <div className="login-container">
                 <div className="login-form">
-                    {/* Logo */}
-                    <img 
-                    src="https://vuhurnvoeziyugrmjiqs.supabase.co/storage/v1/object/public/general//acefrcr_logo.jpeg" 
-                    alt="Ace FRCR Logo" 
-                    className="logo"
-                    />
-                    <h2>Sign In to Ace FRCR Admin Panel</h2>
+                    <h1>Start your journey</h1>
+                    <h2>Sign In to Chionster ADMIN</h2>
                     <form className='form-body' onSubmit={handleEmailLogin}>
                         <div className="input-group">
                             <input
@@ -138,14 +124,14 @@ const Login = () => {
                             {loading ? 'Logging in...' : 'Login'}
                         </button>
                     </form>
-                    {/*<p className="footers">
+                    <p className="footer">
                         Forgot Password?{' '}
                         <span onClick={() => navigate('/forgetpassword')}>Click Here</span>
                     </p>
                     <p>
                         Don't have an account?{' '}
                         <span onClick={() => navigate('/signup')}>Sign Up</span>
-                    </p>*/}
+                    </p>
                 </div>
                 <div className="login-banner"></div>
             </div>
