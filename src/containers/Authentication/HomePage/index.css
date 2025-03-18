@@ -978,52 +978,80 @@
       transform: scale(1.02);
   }
 
-  .question-progress {
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+}
+
+.score-section h3, .score-section h4 {
+    margin: 0;
+    padding: 4px 0;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+}
+
+.score-section h3, .score-section h4 {
+  margin: 0;
+  padding: 4px 0;
+}
+
+.progress-bar {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5 items per row */
+  gap: 8px;
+  padding: 0;
+  list-style: none;
+  width: 80%;
+}
+
+.progress-item {
+  width: 100%;
+  aspect-ratio: 1 / 1; /* Square shape */
+  background: #f0f0f0;
+  border-radius: 4px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+/* Colors for progress states */
+.progress-item.correct {
+  background: #28a745; /* Green */
+  color: white;
+}
+
+.progress-item.wrong {
+  background: #dc3545; /* Red */
+  color: white;
+}
+
+.progress-item.active {
+  background: #007bff; /* Blue */
+  color: white;
+}
+
+.progress-item.upcoming {
+  background: #ccc; /* Gray */
+  color: black;
+}
+
+
+
+
+.question-progress {
     width: 100%;
     display: flex;
     justify-content: center;
     margin: 20px 0;
-}
-
-.progress-bar {
-    list-style: none;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0;
-    position: relative;
-    width: 80%;
-    max-width: 600px;
-}
-
-.progress-bar::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 0;
-    width: 100%;
-    height: 4px;
-    background: #ddd;
-    transform: translateY(-50%);
-    z-index: 0;
-}
-
-.progress-item {
-    position: relative;
-    z-index: 1;
-    background: white;
-    padding: 10px;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 3px solid #ddd;
-    font-size: 14px;
-    font-weight: bold;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: 0.3s;
 }
 
 /* Style for completed (previous) questions */
@@ -1146,3 +1174,25 @@
   font-size: 14px;
   line-height: 1.5;
 }
+
+
+.option {
+  padding: 8px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.correct {
+  background-color: #d4edda; /* Light Green */
+  border: 2px solid #28a745; /* Green */
+}
+
+.wrong {
+  background-color: #f8d7da; /* Light Red */
+  border: 2px solid #dc3545; /* Red */
+}
+

@@ -130,7 +130,7 @@ export default function HomePage() {
                   categories.map((item, index) => (
                     <button
                       key={index}
-                      onClick={() => navigate(`/quesbank/questionbank/${item.category}`)}
+                      onClick={() => navigate(`/Chiongster/questionbank/${item.category}`)}
                       className="dropdown-item"
                     >
                       {item.category}
@@ -162,7 +162,7 @@ export default function HomePage() {
         </>
       ) : (
         <>
-          <a href="/quesbank/login" className="btn btn-outline">
+          <a href="/Chiongster/login" className="btn btn-outline">
             Sign in
           </a>
           <a href="#" className="btn btn-primary">
@@ -185,7 +185,7 @@ export default function HomePage() {
             single, powerful web platform.
           </p>
           <div className="flex flex-col sm-flex-row gap-4">
-            <a href="/quesbank/demo" className="btn btn-primary w-full sm-w-auto">
+            <a href="/Chiongster/demo" className="btn btn-primary w-full sm-w-auto">
               Book a demo
             </a>
             <a href="/try" className="btn btn-outline w-full sm-w-auto">
