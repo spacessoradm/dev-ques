@@ -5,8 +5,8 @@
   left: 0;
   height: 100%;
   width: 270px;
-  background-color: #1e293b;
-  color: white;
+  background-color: #ffffff;
+  color: #004c4c;
   transition: width 0.3s ease;
   z-index: 1000;
   display: flex;
@@ -44,6 +44,7 @@
 }
 
 .side-nav-item {
+  color: #004c4c;
   display: flex;
   flex-direction: column; /* Allow dropdown to appear below */
   align-items: stretch;
@@ -58,7 +59,7 @@
   justify-content: flex-start;
   padding: 15px 20px; /* Uniform padding */
   text-decoration: none;
-  color: #fff;
+  color: #004c4c;
   background-color: transparent;
   width: 100%; /* Ensure full width */
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -66,11 +67,13 @@
 }
 
 .side-nav-item a.active {
-  background-color: #2563eb;
+  background-color: #004c4c;
+  color: #ffffff;
 }
 
 .side-nav-item a:hover {
-  background-color: #374151;
+  background-color: #004c4c;
+  color: #ffffff;
 }
 
 /* Icon Styling */
@@ -84,7 +87,7 @@
 }
 
 .nav-title {
-  font-family: 'Courier New', Courier, monospace;
+  font-family: 'Poppins', sans-serif;
   font-size: 1rem; /* Adjust text size */
   white-space: nowrap; /* Prevent text wrapping */
   overflow: hidden;
@@ -112,13 +115,13 @@
   transition: background-color 0.3s ease;
 }
 
-.dropdown-header:hover {
-  background-color: #374151;
+.dropdown-header a:hover {
+  background-color: #004c4c;
+  color: #ffffff !important;
 }
 
 /* Dropdown Arrow */
 .dropdown-header .dropdown-arrow {
-  margin-left: auto;
   transition: transform 0.3s ease;
 }
 
@@ -133,7 +136,7 @@
   padding: 15px 20px;
   cursor: pointer;
   background-color: transparent;
-  color: white;
+  color: #004c4c;
   transition: background-color 0.3s ease;
 }
 
@@ -142,7 +145,7 @@
   list-style: none;
   margin: 0;
   padding-left: 20px; /* Indentation for nested items */
-  background-color: #1e293b;
+  background-color: #ffffff;
   display: none; /* Hidden by default */
 }
 
@@ -155,9 +158,9 @@
 }
 
 .nested-item a {
-  font-family: 'Courier New', Courier, monospace;
+  font-family: 'Poppins', sans-serif;
   text-decoration: none;
-  color: white;
+  color: #004c4c;
   transition: color 0.3s ease;
 }
 
@@ -167,4 +170,8 @@
 
 .nested-item a:hover {
   color: #ffffff;
+}
+
+.toggle-logo-expand {
+  width: 50px !important;
 }

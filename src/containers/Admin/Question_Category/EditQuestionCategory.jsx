@@ -1,23 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import supabase from "../../../config/supabaseClient";
 
-import "./index.css";
-import BackButton from "../../../components/Button/BackArrowButton";
+import "./index.css"; // Reuse the same CSS
 import Toast from "../../../components/Toast";
 import PlainInput from "../../../components/Input/PlainInput";
 import TextArea from "../../../components/Input/TextArea";
+import { X } from 'lucide-react';
 
-const EditQuestionCategory = () => {
-    const { id } = useParams();
-    const [questionCategory, setQuestionCategory] = useState(null);
+const EditQuestionCategory = ({ isOpen, onClose, categoryId }) => {
+    if (!isOpen || !categoryId) return null; // Don't render if modal is closed or no ID
+
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [seqInMenu, setSeqInMenu] = useState("");
     const [imageUrl, setImageUrl] = useState("");
     const [imageFile, setImageFile] = useState(null);
-    const [previewUrl, setPreviewUrl] = useState(""); // Holds the preview of the new image
-    const navigate = useNavigate();
+    const [previewUrl, setPreviewUrl] = useState(""); // Holds preview of new image
     const [toastInfo, setToastInfo] = useState({ visible: false, message: "", type: "" });
 
     const showToast = (message, type) => {
@@ -26,17 +24,19 @@ const EditQuestionCategory = () => {
     };
 
     useEffect(() => {
+        
+        if (!categoryId) return; // Avoid fetching if ID is missing
+
         const fetchQuestionCategoryData = async () => {
             try {
                 const { data, error } = await supabase
                     .from("question_category")
                     .select("*")
-                    .eq("id", id)
+                    .eq("id", categoryId)
                     .single();
 
                 if (error) throw error;
 
-                setQuestionCategory(data);
                 setName(data.category_name);
                 setDescription(data.description);
                 setSeqInMenu(data.seq_in_menu);
@@ -47,7 +47,7 @@ const EditQuestionCategory = () => {
         };
 
         fetchQuestionCategoryData();
-    }, [id]);
+    }, [categoryId]);
 
     const handleImageChange = (e) => {
         if (e.target.files.length > 0) {
@@ -57,56 +57,23 @@ const EditQuestionCategory = () => {
         }
     };
 
-    const uploadImageAndUpdateUrl = async () => {
-        if (!imageFile) return imageUrl; // No new image, return existing URL
-
-        try {
-            // Delete old image if exists
-            if (imageUrl) {
-                const oldFileName = imageUrl.split("/").pop(); // Extracts filename from URL
-                const oldFilePath = `categories/${oldFileName}`; // Full path inside Supabase storage
-                await supabase.storage.from("question").remove([oldFilePath]);
-            }
-
-            const fileExt = imageFile.name.split('.').pop();
-            const fileName = `${Date.now()}.${fileExt}`;
-            const filePath = `categories/${fileName}`;
-
-            const { error: uploadError } = await supabase.storage
-                .from('question')
-                .upload(filePath, imageFile);
-
-            if (uploadError) throw uploadError;
-
-            //const newImageUrl = `${supabase.storage.from(BUCKET_NAME).getPublicUrl(fileName).data.publicUrl}`;
-            return filePath;
-        } catch (error) {
-            console.error("Image upload error:", error.message);
-            showToast("Failed to upload image.", "error");
-            return imageUrl; // Return old image URL if upload fails
-        }
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
-            const newImageUrl = await uploadImageAndUpdateUrl();
-
             const { error } = await supabase
                 .from("question_category")
                 .update({
                     category_name: name,
                     description: description,
                     seq_in_menu: seqInMenu,
-                    Image_Path: newImageUrl,
                 })
-                .eq("id", id);
+                .eq("id", categoryId);
 
             if (error) throw error;
 
             showToast("Question category updated successfully.", "success");
-            navigate("/admin/questioncategory");
+            onClose(); // Close modal after successful update
         } catch (error) {
             console.error("Error updating question category:", error.message);
             showToast("Failed to update question category.", "error");
@@ -114,21 +81,18 @@ const EditQuestionCategory = () => {
     };
 
     return (
-        <div style={{ fontFamily: "Courier New" }}>
-            <BackButton to="/admin/questioncategory" />
-            <h2>Edit Question Category</h2>
+        <div className="modal-overlay">
+            <div className="modal-container">
+                <X onClick={onClose} />
+                <h2>Edit Question Category</h2>
 
-            {toastInfo.visible && <Toast message={toastInfo.message} type={toastInfo.type} />}
+                {toastInfo.visible && <Toast message={toastInfo.message} type={toastInfo.type} />}
 
-            <form onSubmit={handleSubmit} className="outsider">
-                <div className="insider">
-                    <PlainInput label="Category Name" name="name" value={name} onChange={(e) => setName(e.target.value)} />
+                <form onSubmit={handleSubmit} className="insider">
+                    <PlainInput label="Category Name" value={name} onChange={(e) => setName(e.target.value)} />
+                    <TextArea label="Category Description" value={description} onChange={(e) => setDescription(e.target.value)} />
+                    <PlainInput label="Seq in Menu" value={seqInMenu} onChange={(e) => setSeqInMenu(e.target.value)} />
 
-                    <TextArea label="Category Description" name="description" value={description} onChange={(e) => setDescription(e.target.value)} />
-
-                    <PlainInput label="Seq in Menu" name="seqInMenu" value={seqInMenu} onChange={(e) => setSeqInMenu(e.target.value)} />
-
-                    {/* Current Image Preview */}
                     {imageUrl && !previewUrl && (
                         <div>
                             <p>Current Image:</p>
@@ -136,7 +100,6 @@ const EditQuestionCategory = () => {
                         </div>
                     )}
 
-                    {/* New Image Preview */}
                     {previewUrl && (
                         <div className="enhanced-input">
                             <p>New Image Preview:</p>
@@ -144,15 +107,14 @@ const EditQuestionCategory = () => {
                         </div>
                     )}
 
-                    {/* Image Upload */}
                     <label className="file-upload">
                         <span>Upload New Image</span>
                         <input type="file" accept="image/*" onChange={handleImageChange} className="enhanced-input" />
                     </label>
 
                     <button type="submit" className="submit-btn">Submit</button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     );
 };

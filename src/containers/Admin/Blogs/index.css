@@ -1,7 +1,7 @@
 /* Redeem Items */
 
 .whole-page{
-    font-family: 'Courier New', Courier, monospace;
+    font-family: 'Poppins', sans-serif;
 }
 
 .title-page{
@@ -65,7 +65,7 @@
     width: 100%;
     border-collapse: collapse;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    font-family: 'Courier New';
+    font-family: 'Poppins';
     border-radius: 35px;
   }
 
@@ -188,3 +188,104 @@ label {
   min-height: 150px;
   font-size: 16px;
 }
+
+.blog-grid {
+  padding: 20px;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  font-family: Poppins;
+}
+
+.blog-card {
+  background: #fff;
+  color: #fff;
+  border: 1px solid #004c4c;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  transition: 0.3s;
+}
+
+.blog-card:hover {
+  transform: translateY(-5px);
+}
+
+.blog-image {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-bottom: 1px solid #fff;
+}
+
+.blog-title {
+  color: #004c4c;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.blog-content {
+  color: #004c4c;
+  font-size: 0.5rem;
+  padding: 10px;
+}
+
+.blog-tag {
+  font-size: 0.9rem;
+  color: #bbb;
+}
+
+.blog-date {
+  font-size: 0.8rem;
+  color: #777;
+}
+
+.blog-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.action-icon {
+  cursor: pointer;
+  font-size: 1.5rem;
+}
+
+.view-icon { color: #4caf50; }
+.edit-icon { color: #ff9800; }
+.delete-icon { color: #f44336; }
+
+
+/* Popup */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5); /* Dark overlay */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999; /* Ensure it's behind the popup but above everything else */
+}
+
+.modal-container {
+  background: white;
+  padding: 20px;
+  width: 500px; /* Adjust as needed */
+  max-width: 90%;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000; /* Ensure it appears on top */
+}
+
+

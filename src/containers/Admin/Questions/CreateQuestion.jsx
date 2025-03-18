@@ -1,35 +1,27 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import supabase from "../../../config/supabaseClient";
 import { FaMinusCircle, FaPlusCircle } from "react-icons/fa";
-import "./index.css";
 import JoditEditor from "jodit-react";
 
 import BackButton from "../../../components/Button/BackArrowButton";
 import Toast from "../../../components/Toast";
-import PlainInput from "../../../components/Input/PlainInput";
 import SingleSelect from "../../../components/Input/SingleSelect";
+
+import "./index.css";
 
 const CreateQuestion = () => {
   const navigate = useNavigate();
   const { subCategoryName } = useParams();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [formData, setFormData] = useState({
-    question_text: "",
-    question_type: "",
-    options: "",
-    correct_answer: "",
-    explanation: "",
-    category: "",
-    sub_category: "",
-  });
-
   const [question, setQuestion] = useState("");
   const [questionType, setQuestionType] = useState("");
-  const [options, setOptions] = useState([""]);
+  const [options, setOptions] = useState([]);
   const [answer, setAnswer] = useState("");
+  const [content, setContent] = useState("");
+  const [manualCode, setManualCode] = useState(""); 
+  const editor = useRef(null);
 
   const [toastInfo, setToastInfo] = useState({
     visible: false,
@@ -42,37 +34,120 @@ const CreateQuestion = () => {
     setTimeout(() => setToastInfo({ visible: false, message: "", type: "" }), 3000);
   };
 
-  const editor = useRef(null)
-  const [content, setContent] = useState('')
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-
+  
     try {
-      const formattedOptions = JSON.stringify(options.map((opt) => opt.value));
-
-      const { data: questionData, error: questionError } = await supabase
-        .from("questions")
-        .insert({
-          question_text: question,
-          question_type: questionType,
-          options: formattedOptions,
-          correct_answer: answer,
-          explanation: content,
-          category: "Part 2A",
-          sub_category: subCategoryName,
-          created_at: new Date().toISOString(),
-          modified_at: new Date().toISOString(),
-        })
-        .select()
-        .single();
-
-      if (questionError) throw questionError;
-
+      let finalCode = manualCode.trim(); // Ensure no leading/trailing spaces
+      let runningNumberId = null;
+      let r_number = "000"; // Default in case no data found
+      let newNumber = ""; 
+      
+      if (!finalCode) {
+        // Retrieve running_number_id
+        const { data: subCategoryData, error: subCategoryError } = await supabase
+          .from("question_subcategory")
+          .select("running_number_id")
+          .eq("subcategory_name", subCategoryName)
+          .single();
+  
+        if (subCategoryError) throw subCategoryError;
+        if (!subCategoryData || !subCategoryData.running_number_id) {
+          throw new Error("No matching subcategory found");
+        }
+  
+        runningNumberId = subCategoryData.running_number_id;
+  
+        // Get current running number
+        const { data: runningNumberData, error: runningNumberError } = await supabase
+          .from("running_numbers")
+          .select("r_number, prefix, suffix")
+          .eq("id", runningNumberId)
+          .single();
+  
+        if (runningNumberError) throw runningNumberError;
+  
+        r_number = runningNumberData.r_number || "000"; // Default to "00000" if null
+        const { prefix, suffix } = runningNumberData;
+  
+        // ✅ Ensure `r_number` is a string and increment correctly
+        const numericValue = parseInt(r_number, 10) || 0; 
+        newNumber = (numericValue + 1).toString().padStart(r_number.length, "0"); // Keeps leading zeros
+  
+        finalCode = `${prefix}${r_number}${suffix}`;
+  
+        // Insert question
+        const formattedOptions = JSON.stringify(options.map((opt) => opt.value));
+    
+        const { data: questionData, error: questionError } = await supabase
+          .from("questions")
+          .insert({
+            question_text: question,
+            question_type: questionType,
+            options: formattedOptions,
+            correct_answer: answer,
+            explanation: content,
+            category: "Part 2A",
+            sub_category: subCategoryName,
+            unique_code: finalCode, // Use either auto-generated or manual code
+            created_at: new Date().toISOString(),
+            modified_at: new Date().toISOString(),
+          })
+          .select()
+          .single();
+    
+        if (questionError) throw questionError;
+      } else {
+        const { data: subCategoryData, error: subCategoryError } = await supabase
+          .from("question_subcategory")
+          .select("running_number_id")
+          .eq("subcategory_name", subCategoryName)
+          .single();
+  
+        if (subCategoryError) throw subCategoryError;
+        if (!subCategoryData || !subCategoryData.running_number_id) {
+          throw new Error("No matching subcategory found");
+        }
+        // Insert question
+        const formattedOptions = JSON.stringify(options.map((opt) => opt.value));
+    
+        const { data: questionData, error: questionError } = await supabase
+          .from("questions")
+          .insert({
+            question_text: question,
+            question_type: questionType,
+            options: formattedOptions,
+            correct_answer: answer,
+            explanation: content,
+            category: "Part 2A",
+            sub_category: subCategoryName,
+            unique_code: finalCode, // Use either auto-generated or manual code
+            created_at: new Date().toISOString(),
+            modified_at: new Date().toISOString(),
+          })
+          .select()
+          .single();
+    
+        if (questionError) throw questionError;
+      }
+  
+      // ✅ Move newNumber check outside to make sure it’s defined
+      if (!manualCode.trim() && runningNumberId && newNumber) {
+        console.log("Updating running_numbers with:", { id: runningNumberId, r_number: newNumber });
+  
+        const { error: updateError } = await supabase
+          .from("running_numbers")
+          .update({ r_number: newNumber }) // Ensures correctly formatted number
+          .eq("id", runningNumberId);
+  
+        if (updateError) throw updateError;
+      }
+  
       showToast("Question created successfully!", "success");
-      navigate("/admin/bookings/2A");
+      navigate("/admin/questions/2A");
+  
     } catch (error) {
       setError(error.message);
       showToast(`Error creating question: ${error.message}`, "error");
@@ -80,7 +155,8 @@ const CreateQuestion = () => {
       setLoading(false);
     }
   };
-
+  
+  
   const handleQuestionTypeChange = (value) => {
     setQuestionType(value);
     setOptions([{ label: "A", value: "" }]);
@@ -96,6 +172,7 @@ const CreateQuestion = () => {
   };
 
   const addOption = () => {
+    if (!questionType) return;
     const newLabel = String.fromCharCode(65 + options.length);
     setOptions([...options, { label: newLabel, value: "" }]);
   };
@@ -108,109 +185,156 @@ const CreateQuestion = () => {
     setOptions(updatedOptions);
   };
 
-  const handleContentChange = (value) => {
-    setFormData((prev) => ({ ...prev, content: value }));
-  };
-
   return (
-    <div className="create-venue-category-container">
+    <div className="create-venue-category-container" style={{ fontFamily: "Poppins"}} > 
       <BackButton to="/admin/questions/2A" />
-      <h2 style={{fontFamily: 'Poppins', paddingLeft: '50px', paddingRight: '50px'}}>2A Question</h2>
+      <h2 style={{ paddingLeft: "50px", paddingRight: "50px" }}>
+        2A Question
+      </h2>
 
-      {toastInfo.visible && <Toast message={toastInfo.message} type={toastInfo.type} />}
+      <div className="container">
+        {/* Sidebar */}
+        <div className="sidebar">
+          <h3>Sections</h3>
+          <ul className="subcategory-list">
+            <li
+              className={`main-details ${questionType && question ? "active" : ""}`}
+              style={{marginTop: '12px'}}
+            >
+              Main Details
+            </li>
+            {options.map((option, index) => (
+              <li key={index}>Option {option.label}</li>
+            ))}
+            <li>
+              <button
+                type="button"
+                className="addbtn"
+                onClick={addOption}
+                disabled={!questionType}
+              >
+                +
+              </button>
+            </li>
+            <li
+              className={`main-details ${answer ? "active" : ""}`}
+              style={{marginTop: '12px'}}
+            >
+              Correct Answer
+            </li>
+            <li
+              className={`main-details ${content? "active" : ""}`}
+              style={{marginTop: '12px'}}
+            >
+              Explanation
+            </li>
+          </ul>
+        </div>
 
-      {error && <div className="error-message">{error}</div>}
+        <div className="question-tab" style={{ padding: "12px", width: "75%" }}>
+          {toastInfo.visible && <Toast message={toastInfo.message} type={toastInfo.type} />}
+          {error && <div className="error-message">{error}</div>}
 
-      <form onSubmit={handleSubmit} className="" style={{fontFamily: 'Poppins', paddingLeft: '50px', paddingRight: '50px'}}>
-        <div className="">
-
-            <div style={{paddingTop: '20px'}}>
-              <label>Sub-Category*</label>
-              <input
-                type="text"
-                value={subCategoryName}
-                required
-                disabled
-                className="enhanced-input"
-              />
-            </div>
-
-            <SingleSelect
-              label="Question Type*"
-              value={questionType}
-              onChange={handleQuestionTypeChange}
-              options={[
-                { label: "Single Option", value: "single" },
-                { label: "Multiple Choice", value: "multiple" },
-              ]}
-              required
-            />
-
-            <div style={{paddingTop: '20px'}}>
-              <label>Title*</label>
-              <input
-                type="text"
-                value={question}
-                onChange={(e) => setQuestion(e.target.value)}
-                required
-                className="enhanced-input"
-              />
-            </div>
-
-            {(questionType === "single" || questionType === "multiple") && (
-                <div style={{paddingTop: '20px'}}>
-                    <label>Options</label>
-                    {options.map((option, index) => (
-                        <div key={index} className="field-container" style={{ display: "flex", alignItems: "center", gap: "8px", paddingTop: '20px' }}>
-                            <span>{option.label}.</span>
-                            <input
-                              type="text"
-                              value={option.value}
-                              onChange={(e) => handleOptionChange(index, e.target.value)}
-                              required
-                              className="enhanced-input"
-                            />
-                            {options.length > 1 && (
-                                <button type="button" className="removebtn" onClick={() => removeOption(index)}>
-                                    -
-                                </button>
-                            )}
-                        </div>
-                    ))}
-                    <button type="button" className="addbtn" onClick={addOption}>
-                        +
-                    </button>
-                </div>
-            )}
-
-            <div style={{paddingTop: '20px'}}>
-              <label>Answer*</label>
-              <input
-                type="text"
-                value={answer}
-                onChange={(e) => setAnswer(e.target.value)}
-                required
-                className="enhanced-input"
-              />
-            </div>
-
-            <div style={{paddingTop: '20px'}}>
-                <label>Explanation*</label>
-                <JoditEditor 
-                  ref={editor} 
-                  value={content} 
-                  onChange={newContent => setContent(newContent)} 
+          <form
+            onSubmit={handleSubmit}
+            className=""
+            style={{ fontFamily: "Poppins", paddingLeft: "50px", paddingRight: "50px" }}
+          >
+            <div className="">
+              <div style={{ paddingTop: "20px" }}>
+                <label>Sub-Category*</label>
+                <input
+                  type="text"
+                  value={subCategoryName}
+                  required
+                  disabled
                   className="enhanced-input"
                 />
-            </div>
+              </div>
 
-          <div className="button-container">
-            <button type="submit" className="submit-btn" disabled={loading} style={{width: '15%'}}>
-              {loading ? "Creating..." : "Create"}
-            </button>
-          </div>
+              <SingleSelect
+                label="Question Type*"
+                value={questionType}
+                onChange={handleQuestionTypeChange}
+                options={[
+                  { label: "Single Option", value: "single" },
+                  { label: "Multiple Choice", value: "multiple" },
+                ]}
+                required
+              />
+
+              <div style={{ paddingTop: "20px" }}>
+
+                <label>Custom Code (Optional):</label>
+                <input
+                  type="text"
+                  value={manualCode}
+                  onChange={(e) => setManualCode(e.target.value)}
+                  placeholder="Enter custom code (leave blank for auto-generated)"
+                  className="enhanced-input"
+                />
+              </div>
+
+
+              <div style={{ paddingTop: "20px" }}>
+                <label>Title*</label>
+                <input
+                  type="text"
+                  value={question}
+                  onChange={(e) => setQuestion(e.target.value)}
+                  required
+                  className="enhanced-input"
+                />
+              </div>
+
+              {(questionType === "single" || questionType === "multiple") && (
+                <div style={{ paddingTop: "20px" }}>
+                  <label>Options</label>
+                  {options.map((option, index) => (
+                    <div key={index} className="field-container" style={{ display: "flex", alignItems: "center", gap: "8px", paddingTop: "20px" }}>
+                      <span>{option.label}.</span>
+                      <input
+                        type="text"
+                        value={option.value}
+                        onChange={(e) => handleOptionChange(index, e.target.value)}
+                        required
+                        className="enhanced-input"
+                      />
+                      {options.length > 1 && (
+                        <button type="button" className="removebtn" onClick={() => removeOption(index)}>
+                          -
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div style={{ paddingTop: "20px" }}>
+                <label>Answer*</label>
+                <input
+                  type="text"
+                  value={answer}
+                  onChange={(e) => setAnswer(e.target.value)}
+                  required
+                  className="enhanced-input"
+                />
+              </div>
+
+              <div style={{ paddingTop: "20px" }}>
+                <label>Explanation*</label>
+                <JoditEditor ref={editor} value={content} onChange={setContent} className="enhanced-input" />
+              </div>
+
+              <div className="button-container">
+                <button type="submit" className="submit-btn" disabled={loading} style={{ width: "15%" }}>
+                  {loading ? "Creating..." : "Create"}
+                </button>
+              </div>
+            </div>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
   );
 };

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import supabase from '../../../config/supabaseClient';
-import { FaEye, FaPlus, FaEdit, FaTrashAlt, FaEllipsisV } from "react-icons/fa";
+import { FaEye, FaPlus, FaEdit, FaTrashAlt, FaEllipsisV, FaRegFileAlt } from "react-icons/fa";
 
 import './index.css';
 import SearchBar from '../../../components/SearchBarSection';
 import Toast from '../../../components/Toast';
 import Pagination from '../../../components/pagination';
+import RunningNumbersPopup from './RunningNumbersPopup';
 
 const Questions = () => {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ const Questions = () => {
   const limit = 10;
   const [toastInfo, setToastInfo] = useState({ visible: false, message: '', type: '' });
   const [menuOpen, setMenuOpen] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
 
   const toggleMenu = (id) => {
     setMenuOpen(menuOpen === id ? null : id);
@@ -222,11 +224,18 @@ const Questions = () => {
   
 
   return (
-    <div className="container">
+    <div className="container" style={{ fontFamily: 'Poppins' }}>
       {/* Sidebar */}
       <div className="sidebar">
-        <h3>Question Categories</h3>
-        <ul className="subcategory-list">
+        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+          <h4>Question Categories</h4>
+          <FaRegFileAlt 
+            className="document-icon" 
+            title="Categories Documentation" 
+            onClick={() => setShowPopup(true)}
+          />
+        </div>
+        <ul className="subcategory-list" style={{ paddingTop: '12px'}}>
           <li 
             onClick={() => handleSubcategoryClick(null)} 
             className={selectedSubcategory === null ? "active" : ""}
@@ -262,11 +271,14 @@ const Questions = () => {
         {loading && <p>Loading records...</p>}
         {toastInfo.visible && <Toast message={toastInfo.message} type={toastInfo.type} />}
 
+        {showPopup && <RunningNumbersPopup show={showPopup} onClose={() => setShowPopup(false)} />}
+
         {!loading && filteredQuestions.length > 0 ? (
           <>
-            <table className='table-container'>
+            <table className='table-container' style={{fontFamily: 'Poppins'}}>
               <thead>
                 <tr className='header-row'>
+                <th className='normal-header'>Code</th>
                   <th className='normal-header'>Details</th>
                   <th
                     className='hidden-column'
@@ -279,19 +291,16 @@ const Questions = () => {
               <tbody>
                 {filteredQuestions.map((question) => (
                   <tr key={question.id}>
+                    <td className='question-column'>{question.unique_code}</td>
                     <td className='question-column'>
-                      <div>
-                        <label>Code: </label>
-                        {question.unique_code}
-                      </div>
                       <div>
                         <label>Sub Category: </label>
                         {question.sub_category}
                       </div>
                       <div>
                         <label>Question: </label>
-                        {question.question_text.length > 50 
-                          ? question.question_text.substring(0, 50) + "..." 
+                        {question.question_text.length > 80 
+                          ? question.question_text.substring(0, 80) + "..." 
                           : question.question_text}
                       </div>
                       {question.correct_answer && (

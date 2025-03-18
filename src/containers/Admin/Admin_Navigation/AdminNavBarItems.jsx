@@ -11,26 +11,36 @@ import {
     FaThList,
 } from "react-icons/fa";
 
+import { ChartPie, UserSearch, Newspaper, FileQuestion, Server, Settings, Scroll   } from 'lucide-react';
+
 const adminNavBarItems = [
     {
-        title: "Admin Dashboard",
+        title: "Dashboard",
         link: "/admin/dashboard",
-        icon: <FaTachometerAlt />,
+        icon: <ChartPie />,
     },
     {
         title: "Users",
         link: "/admin/user",
+        icon: <UserSearch />
     },
     {
         title: "Blogs",
         link: "/admin/blogs",
+        icon: <Newspaper />
     },
     {
-        title: "Question Management 2",
+        title: "Demo Test",
+        link: "/admin/questionselect/list",
+        icon: <Scroll  />
+    },
+    {
+        title: "Ques Management",
         dropdown: true,
+        icon: <FileQuestion />,
         items: [
             {
-                title: "Part 2A",
+                title: "2A",
                 link: "/admin/questions/2A",
             },
             {
@@ -42,10 +52,12 @@ const adminNavBarItems = [
     {
         title: "Testimonial",
         link: "/admin/testimonials",
+        icon: <Server />
     },
     {
         title: "Settings",
         dropdown: true, // Indicates dropdown
+        icon: <Settings />,
         items: [
             {
                 title: "Manage Banner",
@@ -65,11 +77,6 @@ const adminNavBarItems = [
             {
                 title: "Question Category Management",
                 link: "/admin/questioncategory",
-                icon: <FaListAlt />,
-            },
-            {
-                title: "Question Sub-Category Management",
-                link: "/admin/questionsubcategory",
                 icon: <FaListAlt />,
             },
             {

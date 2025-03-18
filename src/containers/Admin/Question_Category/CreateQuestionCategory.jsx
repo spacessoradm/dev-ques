@@ -1,24 +1,24 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import supabase from '../../../config/supabaseClient';
 
 import './index.css';
-import BackButton from '../../../components/Button/BackArrowButton';
 import Toast from '../../../components/Toast';
 import PlainInput from '../../../components/Input/PlainInput';
 import TextArea from '../../../components/Input/TextArea';
+import { X } from 'lucide-react';
 
-const CreateQuestionCategory = () => {
-    const navigate = useNavigate();
+const CreateQuestionCategory = ({ isOpen, onClose }) => {
+    if (!isOpen) return null; // Do not render modal if it's not open
+
     const [formData, setFormData] = useState({
         categoryName: '',
         categoryDescription: '',
         seqInMenu: '',
     });
+
     const [image, setImage] = useState(null);
     const [previewUrl, setPreviewUrl] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
     const [toastInfo, setToastInfo] = useState({ visible: false, message: '', type: '' });
 
     const showToast = (message, type) => {
@@ -60,13 +60,12 @@ const CreateQuestionCategory = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setError(null);
 
         try {
             // Upload the image and get the file path
             const imagePath = await uploadImage();
 
-            // Insert new category into the 'venue_category' table
+            // Insert new category into the 'question_category' table
             const { error: categoryError } = await supabase
                 .from('question_category')
                 .insert([
@@ -80,26 +79,25 @@ const CreateQuestionCategory = () => {
 
             if (categoryError) throw categoryError;
 
-            showToast('Venue category created successfully.', 'success');
+            showToast('Question category created successfully.', 'success');
 
-            navigate('/admin/questioncategory');
+            onClose(); // Close the modal after successful creation
         } catch (error) {
-            showToast('Failed to create venue category.', 'error');
-            setError(error.message);
+            showToast('Failed to create question category.', 'error');
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div style={{ fontFamily: "Courier New" }}>
-            <BackButton to="/admin/questioncategory" />   
-            <h2>Create New Question Category</h2> 
+        <div className="modal-overlay">
+            <div className="modal-content">
+                <X onClick={onClose} />
+                <h2>Create New</h2>
 
-            {toastInfo.visible && <Toast message={toastInfo.message} type={toastInfo.type} />}
-            
-            <form onSubmit={handleSubmit} className="outsider">
-                <div className="insider">
+                {toastInfo.visible && <Toast message={toastInfo.message} type={toastInfo.type} />}
+
+                <form onSubmit={handleSubmit} className="modal-form">
                     <PlainInput 
                         label="Category Name"
                         value={formData.categoryName}
@@ -125,15 +123,17 @@ const CreateQuestionCategory = () => {
                     {previewUrl && (
                         <div>
                             <p>Preview:</p>
-                            <img src={previewUrl} alt="Preview" style={{ width: '150px', height: '150px', objectFit: 'cover', marginTop: '10px' }} />
+                            <img src={previewUrl} alt="Preview" className="preview-image" />
                         </div>
                     )}
 
-                    <button type="submit" className="submit-btn" disabled={loading}>
-                        {loading ? 'Creating...' : 'Create'}
-                    </button>
-                </div>
-            </form>
+                    <div className="modal-actions">
+                        <button type="submit" className="submit-btn" disabled={loading}>
+                            {loading ? 'Creating...' : 'Create'}
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 };

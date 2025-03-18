@@ -13,7 +13,7 @@ import supabase from "../../../config/supabaseClient";
 
 const EditQuestionList = () => {
   const navigate = useNavigate();
-  const { listId } = useParams();
+  const listId = 1;
   const [questions, setQuestions] = useState([]);
   const [selectedQuestions, setSelectedQuestions] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -25,37 +25,48 @@ const EditQuestionList = () => {
       const { data, error } = await supabase.from("questions").select("id, question_text");
       if (error) console.error("Error fetching questions:", error);
       else setQuestions(data);
+      return data;  // Return data to ensure it's available before fetching list details
     };
-
+  
     const fetchCategories = async () => {
       const { data, error } = await supabase.from("question_list_category").select("id, category_name");
       if (error) console.error("Error fetching categories:", error);
       else setCategories(data);
     };
-
-    const fetchListDetails = async () => {
-      const { data, error } = await supabase.from("tbl_sequence").select("category, sequence").eq("id", listId).single();
+  
+    const fetchListDetails = async (questionsData) => {
+      const { data, error } = await supabase
+        .from("tbl_sequence")
+        .select("category, sequence")
+        .eq("id", listId)
+        .single();
+      
       if (error) {
         console.error("Error fetching list details:", error);
         return;
       }
-
+  
       setSelectedCategory({ value: data.category, label: data.category });
-      setSelectedQuestions(data.sequence.map((q, index) => ({
-        id: q.id,
-        question_text: questions.find((item) => item.id === q.id)?.question_text || "",
-        position: index + 1,
-      })));
+  
+      // Ensure questionsData is used instead of questions state, since questions might not be set yet
+      setSelectedQuestions(
+        data.sequence.map((q, index) => ({
+          id: q.id,
+          question_text: questionsData.find((item) => item.id === q.id)?.question_text || "", 
+          position: index + 1,
+        }))
+      );
     };
-
+  
     const loadData = async () => {
-      await fetchQuestions();
+      const questionsData = await fetchQuestions(); // Wait for questions to load
       await fetchCategories();
-      await fetchListDetails();
+      await fetchListDetails(questionsData); // Pass loaded questions to fetchListDetails
     };
-
+  
     loadData();
   }, [listId]);
+  
 
   const handleCategoryChange = (selectedOption) => {
     setSelectedCategory(selectedOption);
@@ -98,14 +109,14 @@ const EditQuestionList = () => {
     if (error) console.error("Error updating sequence:", error);
     else alert("Updated successfully!");
 
-    navigate('/admin/questionselect');
+    navigate('/admin/questionselect/list');
   };
 
   return (
-    <div style={{ paddingLeft: "100px", paddingRight: "100px" }}>
-      <h2>Edit Question List</h2>
+    <div style={{ fontFamily: 'Poppins', paddingLeft: "100px", paddingRight: "100px" }}>
+      <h2>Demo Test Question List</h2>
 
-      <div className="field-container">
+      <div style={{ paddingTop: '12px' }}>
         <label>Category :</label>
         <Select
           options={categories.map((category) => ({ value: category.category_name, label: category.category_name }))}
@@ -115,7 +126,7 @@ const EditQuestionList = () => {
         />
       </div>
 
-      <div className="field-container">
+      <div style={{ paddingTop: '12px' }}>
         <label>Questions : </label>
         <Select
           options={questions.map((question) => ({ value: question.id, label: question.question_text }))}
@@ -126,7 +137,7 @@ const EditQuestionList = () => {
         />
       </div>
 
-      <div className="field-container">
+      <div style={{ paddingTop: '12px' }}>
         <label>List :</label>
         <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={selectedQuestions.map((v) => v.id)} strategy={verticalListSortingStrategy}>

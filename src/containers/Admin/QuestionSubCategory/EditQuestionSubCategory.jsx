@@ -16,8 +16,10 @@ const EditQuestionSubCategory = () => {
         categoryDescription: '',
         parent: '',
         seqInMenu: '',
+        runningNumber: '', 
     });
     const [categories, setCategories] = useState([]);
+    const [runningNumbers, setRunningNumbers] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [toastInfo, setToastInfo] = useState({ visible: false, message: '', type: '' });
@@ -42,11 +44,23 @@ const EditQuestionSubCategory = () => {
                     categoryDescription: data.description,
                     parent: data.parent,
                     seqInMenu: data.seq_in_menu,
+                    runningNumber: data.running_number_id
                 });
             }
         };
 
+        const fetchRunningNumbers = async () => {
+            const { data, error } = await supabase.from('running_numbers').select('id, name');
+            if (error) {
+                console.error('Error fetching running numbers:', error);
+            } else {
+                setRunningNumbers(data);
+            }
+        };
+        
+
         fetchCategories();
+        fetchRunningNumbers();
         fetchSubCategory();
     }, [id]);
 
@@ -66,7 +80,7 @@ const EditQuestionSubCategory = () => {
         e.preventDefault();
         setLoading(true);
         setError(null);
-
+    
         try {
             const { error: updateError } = await supabase
                 .from('question_subcategory')
@@ -75,13 +89,13 @@ const EditQuestionSubCategory = () => {
                     description: formData.categoryDescription,
                     parent: formData.parent,
                     seq_in_menu: formData.seqInMenu,
+                    running_number_id: formData.runningNumber,  // Ensure this is included
                 })
                 .eq('id', id);
-
+    
             if (updateError) throw updateError;
-
+    
             showToast('Question subcategory updated successfully.', 'success');
-
             navigate('/admin/questionsubcategory');
         } catch (error) {
             showToast('Failed to update question subcategory.', 'error');
@@ -90,6 +104,7 @@ const EditQuestionSubCategory = () => {
             setLoading(false);
         }
     };
+    
 
     return (
         <div style={{ fontFamily: "Courier New" }}>
@@ -130,6 +145,19 @@ const EditQuestionSubCategory = () => {
                         value={formData.seqInMenu}
                         onChange={(e) => handleChange('seqInMenu', e.target.value)}
                     />
+
+                    <label>Running Number</label>
+                    <select 
+                        value={formData.runningNumber} 
+                        onChange={(e) => handleChange('runningNumber', e.target.value)}
+                        required
+                    >
+                        <option value="">Select a running number</option>
+                        {runningNumbers.map((number) => (
+                            <option key={number.id} value={number.id}>{number.name}</option>
+                        ))}
+                    </select>
+
 
                     <button type="submit" className="submit-btn" disabled={loading}>
                         {loading ? 'Updating...' : 'Update'}

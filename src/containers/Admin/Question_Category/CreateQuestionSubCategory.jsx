@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import supabase from '../../../config/supabaseClient';
-
-import './index.css';
-import BackButton from '../../../components/Button/BackArrowButton';
 import Toast from '../../../components/Toast';
 import PlainInput from '../../../components/Input/PlainInput';
 import TextArea from '../../../components/Input/TextArea';
+import { X } from 'lucide-react';
 
-const CreateQuestionSubCategory = () => {
-    const navigate = useNavigate();
+import './index.css';
+
+const CreateQuestionSubCategory = ({ isOpen, onClose }) => {
+    if (!isOpen) return null; // 🔥 Ensure it does not render when closed
+
     const [formData, setFormData] = useState({
         subCategoryName: '',
         categoryDescription: '',
@@ -17,30 +17,21 @@ const CreateQuestionSubCategory = () => {
         seqInMenu: '',
         runningNumber: '',
     });
+
     const [categories, setCategories] = useState([]);
     const [runningNumbers, setRunningNumbers] = useState([]); 
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
     const [toastInfo, setToastInfo] = useState({ visible: false, message: '', type: '' });
 
     useEffect(() => {
         const fetchCategories = async () => {
             const { data, error } = await supabase.from('question_category').select('id, category_name');
-            if (error) {
-                console.error('Error fetching categories:', error);
-            } else {
-                setCategories(data);
-            }
+            if (!error) setCategories(data);
         };
 
-        // Fetch running numbers
         const fetchRunningNumbers = async () => {
-            const { data, error } = await supabase.from('running_numbers').select('id, name'); 
-            if (error) {
-                console.error('Error fetching running numbers:', error);
-            } else {
-                setRunningNumbers(data);
-            }
+            const { data, error } = await supabase.from('running_numbers').select('id, name');
+            if (!error) setRunningNumbers(data);
         };
 
         fetchCategories();
@@ -62,10 +53,8 @@ const CreateQuestionSubCategory = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setError(null);
 
         try {
-            console.log(formData.runningNumber)
             const { error: categoryError } = await supabase
                 .from('question_subcategory')
                 .insert([
@@ -82,24 +71,24 @@ const CreateQuestionSubCategory = () => {
 
             showToast('Question subcategory created successfully.', 'success');
 
-            navigate('/admin/questionsubcategory');
+            // Close modal after successful creation
+            setTimeout(onClose, 1000); 
         } catch (error) {
             showToast('Failed to create question subcategory.', 'error');
-            setError(error.message);
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div style={{ fontFamily: "Courier New" }}>
-            <BackButton to="/admin/questionsubcategory" />   
-            <h2>Create New Question Subcategory</h2> 
+        <div className="modal-overlay">
+            <div className="modal-container">
+                <X onClick={onClose} />
+                <h2>Create New Question Subcategory</h2>
 
-            {toastInfo.visible && <Toast message={toastInfo.message} type={toastInfo.type} />}
-            
-            <form onSubmit={handleSubmit} className="outsider">
-                <div className="insider">
+                {toastInfo.visible && <Toast message={toastInfo.message} type={toastInfo.type} />}
+
+                <form onSubmit={handleSubmit} className="modal-form">
                     <PlainInput 
                         label="SubCategory Name"
                         value={formData.subCategoryName}
@@ -113,17 +102,19 @@ const CreateQuestionSubCategory = () => {
                         onChange={(e) => handleChange('categoryDescription', e.target.value)}
                     />
 
-                    <div className=''>
+                    <div>
                         <label>Parent Category</label>
-                        <select
-                            className='enhanced-input' 
-                            value={formData.parent} 
+                        <select 
+                            className="enhanced-input"
+                            value={formData.parent}
                             onChange={(e) => handleChange('parent', e.target.value)}
                             required
                         >
                             <option value="">Select a category</option>
                             {categories.map((category) => (
-                                <option key={category.id} value={category.id}>{category.category_name}</option>
+                                <option key={category.id} value={category.id}>
+                                    {category.category_name}
+                                </option>
                             ))}
                         </select>
                     </div>
@@ -134,17 +125,17 @@ const CreateQuestionSubCategory = () => {
                         onChange={(e) => handleChange('seqInMenu', e.target.value)}
                     />
 
-                    <div className=''>
+                    <div>
                         <label>Running Number</label>
                         <select
-                            className='enhanced-input'
+                            className="enhanced-input"
                             value={formData.runningNumber}
                             onChange={(e) => handleChange('runningNumber', e.target.value)}
                         >
                             <option value="">Select a running number</option>
                             {runningNumbers.map((number) => (
                                 <option key={number.id} value={number.id}>
-                                    {number.name} {/* Label shows name, value stores id */}
+                                    {number.name}
                                 </option>
                             ))}
                         </select>
@@ -153,8 +144,8 @@ const CreateQuestionSubCategory = () => {
                     <button type="submit" className="submit-btn" disabled={loading}>
                         {loading ? 'Creating...' : 'Create'}
                     </button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     );
 };

@@ -1,7 +1,7 @@
 /* */
 
-.whole-page{
-  font-family: 'Courier New', Courier, monospace;
+.whole-page {
+  font-family: 'Poppins', sans-serif;
 }
 
 .title-page{
@@ -61,17 +61,18 @@
   text-align: center;
 }
 
-.table-container {
+.table-container-popup {
   width: 100%;
   border-collapse: collapse;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  font-family: 'Courier New';
+  font-family: 'Calibri', sans-serif;
   border-radius: 35px;
 }
 
 .header-row {
   background-color: #004c4c !important;
   color: white;
+  height: 35px;
 }
 
 .sort-header {
@@ -205,6 +206,19 @@
   background: #e9ecef;
 }
 
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Ensures proper spacing */
+}
+
+.document-icon {
+  cursor: pointer;
+  margin-left: 10px; /* Adds space between the text and the icon */
+  font-size: 1.1em; /* Adjusts icon size */
+  color: #2196F3;
+}
+
 .venue-category {
   flex: 1; /* Ensures main content takes remaining space */
   padding: 20px;
@@ -317,3 +331,66 @@
   justify-content: flex-end;
   margin-top: 12px;
 }
+
+.admin-footer {
+  position: fixed; /* Keeps footer at the bottom */
+  bottom: 0;
+  width: 100%;
+  background-color: black;
+  color: white;
+  text-align: center;
+  padding: 10px;
+}
+
+.question-tab {
+  max-height: calc(100vh - 150px); /* Adjust height based on header/footer */
+  overflow-y: auto;  /* Enables vertical scrolling */
+  padding: 12px;
+  width: 75%;
+  background-color: white; /* Optional for better contrast */
+}
+
+/* module running number popup */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.3s ease;
+}
+
+.popup-overlay.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+.popup-container {
+  background: #fff;
+  width: 80%;
+  max-width: 800px;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-button {
+  cursor: pointer;
+  font-size: 24px;
+  color: red;
+}
+
+
+
