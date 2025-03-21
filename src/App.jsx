@@ -44,7 +44,7 @@ import PreviewQuestion from './containers/Admin/Bookings/PreviewQuestion.jsx';
 import PreviewPhysicQuestion from './containers/Admin/Bookings/PreviewPhysicQuestion.jsx';
 import CreateQuestion from './containers/Admin/Bookings/CreateQuestion.jsx';
 import CreatePhysicQuestion from './containers/Admin/Bookings/CreatePhysicQuestion.jsx';
-import EditQuestion from './containers/Admin/Bookings/EditQuestion.jsx';
+import EditQuestion from './containers/Admin/Questions/EditQuestion.jsx';
 import EditPhysicQuestion from './containers/Admin/Bookings/EditPhysicQuestion.jsx';
 
 import Questions from './containers/Admin/Questions/index.jsx';
@@ -156,7 +156,7 @@ const App = () => {
                     {/* Authentication Routes */}
                     <Route path="/homepage" element={<HomePage />} />
                     <Route path="/demo" element={<Demo />} />
-                    <Route path="/Quesbank/questionbank/:categoryParam" element={<QuestionBank />} />
+                    <Route path="/Chiongster/questionbank/:categoryParam" element={<QuestionBank />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/forgetpassword" element={<ForgetPassword />} />
                     <Route path="/resetpassword" element={<ResetPassword />} />
@@ -531,7 +531,7 @@ const App = () => {
                                 }
                             />
                             <Route
-                                path="/admin/bookings/edit/:id"
+                                path="/admin/questions/edit/:id"
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
                                         <EditQuestion/>
