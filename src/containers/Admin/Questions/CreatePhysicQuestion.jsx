@@ -28,6 +28,7 @@ const CreatePhysicQuestion = () => {
         explanation: '',
         category: '',
         sub_category: '',
+        unique_code: '',
         subquestion: [
             {
                 subquestion_title: "",
@@ -73,17 +74,60 @@ const CreatePhysicQuestion = () => {
         setError(null);
     
         try {
+            let finalCode = formData.unique_code.trim(); // Ensure no spaces
+            let runningNumberId = null;
+            let r_number = "000"; // Default running number
+            let newNumber = "";
     
+            if (!finalCode) {
+                // Step 1: Retrieve `running_number_id` from `question_subcategory`
+                const { data: subCategoryData, error: subCategoryError } = await supabase
+                    .from("question_subcategory")
+                    .select("running_number_id")
+                    .eq("subcategory_name", subCategoryName)
+                    .single();
+                
+                console.log(subCategoryName)
+    
+                if (subCategoryError) throw subCategoryError;
+                if (!subCategoryData || !subCategoryData.running_number_id) {
+                    throw new Error("No matching subcategory found");
+                }
+    
+                runningNumberId = subCategoryData.running_number_id;
+    
+                // Step 2: Get current running number from `running_numbers`
+                const { data: runningNumberData, error: runningNumberError } = await supabase
+                    .from("running_numbers")
+                    .select("r_number, prefix, suffix")
+                    .eq("id", runningNumberId)
+                    .single();
+    
+                if (runningNumberError) throw runningNumberError;
+    
+                r_number = runningNumberData.r_number || "000"; // Default to "000"
+                const { prefix, suffix } = runningNumberData;
+    
+                // Step 3: Increment running number & format with leading zeros
+                const numericValue = parseInt(r_number, 10) || 0;
+                newNumber = (numericValue + 1).toString().padStart(r_number.length, "0"); // Ensure leading zeros
+    
+                // Step 4: Generate finalCode using prefix + newNumber + suffix
+                finalCode = `${prefix}${newNumber}`;
+            }
+    
+            // Step 5: Insert question with the generated/manual code
             const { data: questionData, error: questionError } = await supabase
-                .from('questions')
+                .from("questions")
                 .insert({
                     question_text: question,
-                    question_type: 'subq',
-                    options: [], // Store options as a JSON string
-                    correct_answer: '', 
+                    question_type: "subq",
+                    options: [],
+                    correct_answer: "",
                     explanation: content,
-                    category: 'Physics',
+                    category: "Physics",
                     sub_category: subCategoryName,
+                    unique_code: finalCode, // ✅ Auto-generated or manual code
                     created_at: new Date().toISOString(),
                     modified_at: new Date().toISOString(),
                 })
@@ -91,15 +135,27 @@ const CreatePhysicQuestion = () => {
                 .single();
     
             if (questionError) throw questionError;
-
+    
             const questionId = questionData.id;
     
-          await Promise.all([
-            handleSaveSubQuestion(questionId, formData.subquestion),
-          ]);
+            // Step 6: Save sub-questions
+            await Promise.all([
+                handleSaveSubQuestion(questionId, formData.subquestion),
+            ]);
+    
+            // Step 7: If code was auto-generated, update `running_numbers`
+            if (!formData.unique_code.trim() && runningNumberId) {
+                const { error: updateError } = await supabase
+                    .from("running_numbers")
+                    .update({ r_number: newNumber }) // ✅ Store the incremented number
+                    .eq("id", runningNumberId);
+    
+                if (updateError) throw updateError;
+            }
     
             showToast("Question created successfully!", "success");
-            navigate('/admin/bookings/Physics');
+            navigate("/admin/questions/Physics");
+    
         } catch (error) {
             setError(error.message);
             showToast(`Error creating question: ${error.message}`, "error");
@@ -107,7 +163,7 @@ const CreatePhysicQuestion = () => {
             setLoading(false);
         }
     };
-
+    
     const handleSaveSubQuestion = async (questionId, subquestion) => {
         try {
             console.log(subquestion);
@@ -239,6 +295,17 @@ const CreatePhysicQuestion = () => {
                         />
                     </div>
 
+                    <div style={{ paddingTop: "20px" }}>
+                        <label>Code*</label>
+                        <input
+                            type="text"
+                            value={formData.unique_code}
+                            onChange={(e) => setFormData({ ...formData, unique_code: e.target.value })}
+                            className="enhanced-input"
+                            placeholder="Auto-generate if left blank"
+                        />
+                    </div>
+
                     {/* Tabs Navigation */}
                     <div style={{ display: "flex", marginBottom: "20px", marginTop: '20px' }}>
                         {["Sub-Question"].map((tab, index) => (
@@ -290,14 +357,17 @@ const CreatePhysicQuestion = () => {
 
                             <div style={{paddingTop: '20px'}}>
                                 <label>Answer*</label>
-                                <input
-                                    type="text"
+                                <select
                                     value={group.subquestion_answer}
                                     onChange={(e) =>
-                                    handleSubQuestionChange(index, "subquestion_answer", e.target.value)
+                                        handleSubQuestionChange(index, "subquestion_answer", e.target.value)
                                     }
                                     className="enhanced-input"
-                                />
+                                >
+                                    <option value="">Select Answer</option>
+                                    <option value="true">True</option>
+                                    <option value="false">False</option>
+                                </select>
                             </div>
 
                             <div style={{paddingTop: '20px'}}>

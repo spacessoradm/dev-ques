@@ -6,43 +6,44 @@ import './index.css';
 import SearchBar from '../../../components/SearchBarSection';
 import Toast from '../../../components/Toast';
 import Pagination from '../../../components/pagination';
+import DOMPurify from 'dompurify';
+import CreateTestimonial from './CreateTestimonial';
 
 const Testimonials = () => {
   const navigate = useNavigate();
-
   const [testimonials, setTestimonials] = useState([]);
   const [filteredTestimonials, setFilteredTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortConfig, setSortConfig] = useState({ key: "username", direction: "asc" });
+  const [sortConfig, setSortConfig] = useState({ key: "created_at", direction: "asc" });
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const limit = 10;
+  const limit = 12;
   const [toastInfo, setToastInfo] = useState({ visible: false, message: '', type: '' });
+  const [modalOpen, setModalOpen] = useState(false);
 
   const showToast = (message, type) => {
-        setToastInfo({ visible: true, message, type });
-        setTimeout(() => setToastInfo({ visible: false, message: '', type: '' }), 3000); // Auto-hide
+    setToastInfo({ visible: true, message, type });
+    setTimeout(() => setToastInfo({ visible: false, message: '', type: '' }), 3000);
   };
 
   const fetchTestimonials = async (pageNumber = 1) => {
     setLoading(true);
-    setError(null);
     try {
       const start = (pageNumber - 1) * limit;
       const end = start + limit - 1;
 
-      const { data: testimonialsData, error: testimonialsError } = await supabase
+      const { data, error } = await supabase
         .from('testimonials')
-        .select('id, displayname, subject, status, created_at')
+        .select('id, displayname, subject, content, status, created_at')
+        .order(sortConfig.key, { ascending: sortConfig.direction === "asc" })
         .range(start, end);
 
-      if (testimonialsError) throw testimonialsError;
+      if (error) throw error;
 
-      setTestimonials(testimonialsData);
-      setFilteredTestimonials(testimonialsData);
-      setTotalPages(Math.ceil(testimonialsData.length / limit));
+      setTestimonials(data);
+      setFilteredTestimonials(data);
+      setTotalPages(Math.ceil(data.length / limit));
     } catch (error) {
       showToast("Failed to fetch testimonials.", "error");
     } finally {
@@ -50,66 +51,49 @@ const Testimonials = () => {
     }
   };
 
+  useEffect(() => {
+    fetchTestimonials(page);
+  }, [page, sortConfig]);
+
   const handleSearch = (e) => {
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
 
     if (term) {
-      const filtered = testimonials.filter((testimonial) =>
-        testimonial.username.toLowerCase().includes(term)
+      const filtered = testimonials.filter(({ displayname, subject }) =>
+        displayname.toLowerCase().includes(term) || subject.toLowerCase().includes(term)
       );
       setFilteredTestimonials(filtered);
     } else {
-      setFilteredTestimonials(categories);
+      setFilteredTestimonials(testimonials);
     }
   };
 
-  const handleSort = (key) => {
-    let direction = "asc";
-    if (sortConfig.key === key && sortConfig.direction === "asc") {
-      direction = "desc";
-    }
-    setSortConfig({ key, direction });
-
-    fetchTestimonials(page);
+  const handleSort = () => {
+    setSortConfig(prevConfig => ({
+      key: "created_at",
+      direction: prevConfig.direction === "asc" ? "desc" : "asc"
+    }));
   };
 
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
       setPage(newPage);
-      fetchTestimonials(newPage);
     }
   };
 
-  useEffect(() => {
-    fetchTestimonials(page);
-  }, [page]);
-
-  const handleRefresh = () => fetchTestimonials(page);
-
-  const handleCreate = () => navigate("create");
-
   const deleteTestimonial = async (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this category?");
-    if (!confirmDelete) return;
+    if (!window.confirm("Are you sure you want to delete this testimonial?")) return;
 
     try {
       setLoading(true);
-
-      const { error } = await supabase
-        .from('testimonials')
-        .delete()
-        .eq('id', id);
-
+      const { error } = await supabase.from('testimonials').delete().eq('id', id);
       if (error) throw error;
 
-      setTestimonials((prevTestimonials) => prevTestimonials.filter((testimonial) => testimonial.id !== id));
-      setFilteredTestimonials((prevFilteredTestimonials) =>
-        prevFilteredTestimonials.filter((testimonial) => testimonial.id !== id)
-      );
-
+      setTestimonials(testimonials.filter((t) => t.id !== id));
+      setFilteredTestimonials(filteredTestimonials.filter((t) => t.id !== id));
       showToast("Testimonial deleted successfully.", "success");
-    } catch (err) {
+    } catch {
       showToast("Failed to delete testimonial.", "error");
     } finally {
       setLoading(false);
@@ -117,85 +101,45 @@ const Testimonials = () => {
   };
 
   return (
-    <div className='whole-page'>
+    <div className='whole-page' style={{ fontFamily: 'Poppins' }}>
       <p className='title-page'>Testimonial List Management</p>
-      <p className='subtitle-page'>Manage your testimonial here.</p>
+      <p className='subtitle-page'>Manage your testimonials here.</p>
 
-      <SearchBar
-        searchTerm={searchTerm}
+      <SearchBar 
+        searchTerm={searchTerm} 
         onSearch={handleSearch}
-        onRefresh={handleRefresh}
-        onCreate={handleCreate}
-      />
+        onSort={handleSort}
+        onRefresh={() => fetchTestimonials(page)} 
+        onCreate={() => setModalOpen(true)} />
+
+      {toastInfo.visible && <Toast message={toastInfo.message} type={toastInfo.type} />}
 
       {loading && <p>Loading testimonials...</p>}
 
-      {toastInfo.visible && (
-        <Toast message={toastInfo.message} type={toastInfo.type} />
-      )}
+      <CreateTestimonial isOpen={modalOpen} onClose={() => setModalOpen(false)} />
 
-      {!loading && !error && filteredTestimonials.length > 0 ? (
-        <>
-          <table className='table-container'>
-            <thead>
-              <tr className='header-row'>
-                <th className='normal-header'>ID</th>
-                <th
-                  onClick={() => handleSort("displayname")}
-                  className='sort-header'
-                >
-                  DisplayName {sortConfig.key === "displayname" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                </th>
-                <th className='normal-header'> Subject</th>
-                <th
-                  onClick={() => handleSort("created_at")}
-                  className='sort-header'
-                >
-                  Created At {sortConfig.key === "created_at" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                </th>
-                <th className='normal-header'>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredTestimonials.map((testimonial) => (
-                <tr key={testimonial.id}>
-                  <td className='normal-column'>{testimonial.id}</td>
-                  <td className='normal-column'>{testimonial.displayname}</td>
-                  <td className='normal-column'>{testimonial.subject}</td>
-                  <td className='normal-column'>{testimonial.created_at}</td>
-                  <td className='action-column'>
-                    <FaEye
-                      onClick={() => navigate(`/admin/testimonials/view/${testimonial.id}`)}
-                      title='View'
-                      className='view-button'
-                    />
-                    <FaEdit 
-                      onClick={() => navigate(`/admin/testimonials/edit/${testimonial.id}`)}
-                      title='Edit'
-                      className='edit-button'
-                    />
-                    <FaTrashAlt 
-                      onClick={() => deleteTestimonial(testimonial.id)}
-                      title='Delete'
-                      className='delete-button'
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          <Pagination
-            page={page}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-          />
-        </>
+      {!loading && filteredTestimonials.length > 0 ? (
+        <div className="card-container">
+          {filteredTestimonials.map(({ id, displayname, subject, content, created_at }) => (
+            <div key={id} className="testimonial-card">
+              <p style={{ fontSize: '14px'}}><strong> {subject} </strong></p>
+              <p style={{ fontSize: '12px'}} className="content-text">{DOMPurify.sanitize(content, { ALLOWED_TAGS: [] })}</p>
+              <h4>{displayname}</h4>
+              <p style={{ fontSize: '12px'}}> {new Date(created_at).toLocaleDateString()}</p>
+              <div className="card-actions">
+                <FaEdit onClick={() => navigate(`/admin/testimonials/edit/${id}`)} title='Edit' className='edit-button' />
+                <FaTrashAlt onClick={() => deleteTestimonial(id)} title='Delete' className='delete-button' />
+              </div>
+            </div>
+          ))}
+        </div>
       ) : (
         !loading && <p>No testimonials found.</p>
       )}
+
+      <Pagination page={page} totalPages={totalPages} onPageChange={handlePageChange} />
     </div>
   );
-}; 
+};
 
 export default Testimonials;

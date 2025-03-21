@@ -61,39 +61,35 @@
     text-align: center;
   }
 
-  .table-container {
-    width: 100%;
-    border-collapse: collapse;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    font-family: 'Courier New';
-    border-radius: 35px;
-  }
-
-  .header-row {
-    background-color: #dc7d7d;
-    color: white;
-  }
-
-  .sort-header {
-    padding: 10px; 
-    cursor: pointer;
-  }
-
-  .normal-header {
-    padding: 10px; 
-    text-align: center;
-  }
-
-  .normal-column {
-    padding: 10px; 
-    text-align: center;
-  }
-
-  .action-column {
-    display: flex;
-    justify-content: center;
-    padding: 10px;
+  .card-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     gap: 20px;
+    font-family: 'Poppins';
+  }
+  
+  .testimonial-card {
+    background: white;
+    padding: 15px;
+    border-radius: 25px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .testimonial-card:hover {
+    transform: scale(1.02);
+  }
+  
+  .card-actions {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+  }
+  
+  .view-button, .edit-button, .delete-button {
+    cursor: pointer;
+    font-size: 18px;
+    margin: 0 5px;
   }
 
   .view-button {
@@ -178,5 +174,51 @@
     padding: 12px;
     margin: 16px;
   }
-  
 
+
+/* Ensure the modal content is scrollable */
+.modal-content {
+  background: white;
+  padding: 20px;
+  width: 500px;
+  max-height: 80vh; /* Limit height to 80% of the viewport */
+  overflow-y: auto; /* Enable vertical scrolling */
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Prevent the modal overlay from restricting scrolling */
+.modal-overlay {
+  background: rgba(0, 0, 0, 0.6);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ensure Quill Editor adapts */
+.quill-editor {
+  max-height: 200px; /* Adjust as needed */
+  overflow-y: auto;
+}
+
+/* Adjust preview image size */
+.image-preview {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  margin-top: 10px;
+}
+
+/* Keep buttons at the bottom */
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}

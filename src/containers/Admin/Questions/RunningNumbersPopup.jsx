@@ -4,7 +4,7 @@ import supabase from '../../../config/supabaseClient';
 import './index.css';
 import Pagination from '../../../components/pagination';
 
-const RunningNumbersPopup = ({ show, onClose }) => {
+const RunningNumbersPopup = ({ show, onClose, parentId }) => {
   const [runningNumbers, setRunningNumbers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -21,15 +21,32 @@ const RunningNumbersPopup = ({ show, onClose }) => {
       const start = (pageNumber - 1) * limit;
       const end = start + limit - 1;
 
+      const { data: quesId, error: quesIdError } = await supabase
+        .from('question_subcategory')
+        .select('running_number_id')
+        .eq('parent', parentId);
+
+      if (quesIdError) throw quesIdError;
+
+      // Extract running_number_id values
+      const runningNumberIds = quesId.map(q => q.running_number_id);
+
+      if (runningNumberIds.length === 0) {
+        console.log("No matching running_number_id found");
+        return;
+      }
+
+      // Retrieve matching running_numbers data
       const { data: runningNumbersData, error } = await supabase
         .from('running_numbers')
         .select('*')
-        .range(start, end);
+        .in('id', runningNumberIds)
+        .range(start, end); // Match with running_number_id
 
       if (error) throw error;
 
       setRunningNumbers(runningNumbersData);
-      setTotalPages(Math.ceil(13 / limit)); // Assuming total data count is 13
+      setTotalPages(Math.ceil(runningNumberIds.length / limit)); // Assuming total data count is 13
     } catch (error) {
       console.error("Failed to fetch running numbers:", error);
     } finally {

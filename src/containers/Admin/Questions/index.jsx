@@ -271,7 +271,7 @@ const Questions = () => {
         {loading && <p>Loading records...</p>}
         {toastInfo.visible && <Toast message={toastInfo.message} type={toastInfo.type} />}
 
-        {showPopup && <RunningNumbersPopup show={showPopup} onClose={() => setShowPopup(false)} />}
+        {showPopup && <RunningNumbersPopup show={showPopup} onClose={() => setShowPopup(false)} parentId={parentId} />}
 
         {!loading && filteredQuestions.length > 0 ? (
           <>
@@ -324,7 +324,7 @@ const Questions = () => {
                           </button>
                           <button 
                             className="menu-item edit" 
-                            onClick={() => navigate(`/admin/bookings/edit/${question.id}`)}>
+                            onClick={() => navigate(`/admin/questions/edit/${question.id}`)}>
                               <FaEdit /> Edit
                           </button>
                           <button 

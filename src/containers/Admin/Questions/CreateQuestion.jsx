@@ -38,123 +38,93 @@ const CreateQuestion = () => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-  
+
     try {
-      let finalCode = manualCode.trim(); // Ensure no leading/trailing spaces
-      let runningNumberId = null;
-      let r_number = "000"; // Default in case no data found
-      let newNumber = ""; 
-      
-      if (!finalCode) {
-        // Retrieve running_number_id
-        const { data: subCategoryData, error: subCategoryError } = await supabase
-          .from("question_subcategory")
-          .select("running_number_id")
-          .eq("subcategory_name", subCategoryName)
-          .single();
-  
-        if (subCategoryError) throw subCategoryError;
-        if (!subCategoryData || !subCategoryData.running_number_id) {
-          throw new Error("No matching subcategory found");
+        let finalCode = manualCode.trim(); // Ensure no leading/trailing spaces
+        let runningNumberId = null;
+        let r_number = "000"; // Default in case no data found
+        let newNumber = "";
+
+        if (!finalCode) {
+            // Retrieve running_number_id
+            const { data: subCategoryData, error: subCategoryError } = await supabase
+                .from("question_subcategory")
+                .select("running_number_id")
+                .eq("subcategory_name", subCategoryName)
+                .single();
+
+            if (subCategoryError) throw subCategoryError;
+            if (!subCategoryData || !subCategoryData.running_number_id) {
+                throw new Error("No matching subcategory found");
+            }
+
+            runningNumberId = subCategoryData.running_number_id;
+
+            // Get current running number
+            const { data: runningNumberData, error: runningNumberError } = await supabase
+                .from("running_numbers")
+                .select("r_number, prefix, suffix")
+                .eq("id", runningNumberId)
+                .single();
+
+            if (runningNumberError) throw runningNumberError;
+
+            r_number = runningNumberData.r_number || "000"; // Default to "000"
+            const { prefix, suffix } = runningNumberData;
+
+            // ✅ Convert r_number to an integer, increment, and pad with leading zeros
+            const numericValue = parseInt(r_number, 10) || 0;
+            newNumber = (numericValue + 1).toString().padStart(r_number.length, "0"); // Ensures leading zeros
+
+            // ✅ Use the new incremented number in finalCode
+            finalCode = `${prefix}${newNumber}${suffix}`;
         }
-  
-        runningNumberId = subCategoryData.running_number_id;
-  
-        // Get current running number
-        const { data: runningNumberData, error: runningNumberError } = await supabase
-          .from("running_numbers")
-          .select("r_number, prefix, suffix")
-          .eq("id", runningNumberId)
-          .single();
-  
-        if (runningNumberError) throw runningNumberError;
-  
-        r_number = runningNumberData.r_number || "000"; // Default to "00000" if null
-        const { prefix, suffix } = runningNumberData;
-  
-        // ✅ Ensure `r_number` is a string and increment correctly
-        const numericValue = parseInt(r_number, 10) || 0; 
-        newNumber = (numericValue + 1).toString().padStart(r_number.length, "0"); // Keeps leading zeros
-  
-        finalCode = `${prefix}${r_number}${suffix}`;
-  
+
         // Insert question
         const formattedOptions = JSON.stringify(options.map((opt) => opt.value));
-    
+
         const { data: questionData, error: questionError } = await supabase
-          .from("questions")
-          .insert({
-            question_text: question,
-            question_type: questionType,
-            options: formattedOptions,
-            correct_answer: answer,
-            explanation: content,
-            category: "Part 2A",
-            sub_category: subCategoryName,
-            unique_code: finalCode, // Use either auto-generated or manual code
-            created_at: new Date().toISOString(),
-            modified_at: new Date().toISOString(),
-          })
-          .select()
-          .single();
-    
+            .from("questions")
+            .insert({
+                question_text: question,
+                question_type: questionType,
+                options: formattedOptions,
+                correct_answer: answer,
+                explanation: content,
+                category: "Part 2A",
+                sub_category: subCategoryName,
+                unique_code: finalCode, // Use either auto-generated or manual code
+                created_at: new Date().toISOString(),
+                modified_at: new Date().toISOString(),
+            })
+            .select()
+            .single();
+
         if (questionError) throw questionError;
-      } else {
-        const { data: subCategoryData, error: subCategoryError } = await supabase
-          .from("question_subcategory")
-          .select("running_number_id")
-          .eq("subcategory_name", subCategoryName)
-          .single();
-  
-        if (subCategoryError) throw subCategoryError;
-        if (!subCategoryData || !subCategoryData.running_number_id) {
-          throw new Error("No matching subcategory found");
+
+        // ✅ Update running_numbers with the incremented number
+        if (!manualCode.trim() && runningNumberId) {
+            console.log("Updating running_numbers with:", { id: runningNumberId, r_number: newNumber });
+
+            const { error: updateError } = await supabase
+                .from("running_numbers")
+                .update({ r_number: newNumber }) // Store the incremented number
+                .eq("id", runningNumberId);
+
+            if (updateError) throw updateError;
         }
-        // Insert question
-        const formattedOptions = JSON.stringify(options.map((opt) => opt.value));
-    
-        const { data: questionData, error: questionError } = await supabase
-          .from("questions")
-          .insert({
-            question_text: question,
-            question_type: questionType,
-            options: formattedOptions,
-            correct_answer: answer,
-            explanation: content,
-            category: "Part 2A",
-            sub_category: subCategoryName,
-            unique_code: finalCode, // Use either auto-generated or manual code
-            created_at: new Date().toISOString(),
-            modified_at: new Date().toISOString(),
-          })
-          .select()
-          .single();
-    
-        if (questionError) throw questionError;
-      }
-  
-      // ✅ Move newNumber check outside to make sure it’s defined
-      if (!manualCode.trim() && runningNumberId && newNumber) {
-        console.log("Updating running_numbers with:", { id: runningNumberId, r_number: newNumber });
-  
-        const { error: updateError } = await supabase
-          .from("running_numbers")
-          .update({ r_number: newNumber }) // Ensures correctly formatted number
-          .eq("id", runningNumberId);
-  
-        if (updateError) throw updateError;
-      }
-  
-      showToast("Question created successfully!", "success");
-      navigate("/admin/questions/2A");
-  
+
+        showToast("Question created successfully!", "success");
+        navigate("/admin/questions/2A");
+
     } catch (error) {
-      setError(error.message);
-      showToast(`Error creating question: ${error.message}`, "error");
+        setError(error.message);
+        showToast(`Error creating question: ${error.message}`, "error");
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
+
   
   
   const handleQuestionTypeChange = (value) => {
@@ -312,13 +282,19 @@ const CreateQuestion = () => {
 
               <div style={{ paddingTop: "20px" }}>
                 <label>Answer*</label>
-                <input
-                  type="text"
+                <select
                   value={answer}
                   onChange={(e) => setAnswer(e.target.value)}
                   required
                   className="enhanced-input"
-                />
+                >
+                  <option value="" disabled>Select the correct answer</option>
+                  {options.map((option, index) => (
+                    <option key={index} value={option.label}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div style={{ paddingTop: "20px" }}>

@@ -13,6 +13,7 @@ const PreviewPhysicQuestion = () => {
     const [toastInfo, setToastInfo] = useState({ visible: false, message: '', type: '' });
     const [selectedAnswers, setSelectedAnswers] = useState({});
     const [showExplanations, setShowExplanations] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
 
     const showToast = (message, type) => {
         setToastInfo({ visible: true, message, type });
@@ -41,8 +42,14 @@ const PreviewPhysicQuestion = () => {
                 console.error("Error fetching data:", questionError || subquestionsError);
                 showToast("Error loading question", "error");
             } else {
+                // Parse correct answers if stored as a string
+                const parsedSubquestions = subquestionsData.map(sub => ({
+                    ...sub,
+                    correct_answer: sub.correct_answer === "true" ? "true" : "false"
+                }));
+
                 setQuestion(mainQuestion);
-                setSubquestions(subquestionsData);
+                setSubquestions(parsedSubquestions);
             }
 
             setLoading(false);
@@ -52,6 +59,7 @@ const PreviewPhysicQuestion = () => {
     }, [id]);
 
     const handleSelectAnswer = (subId, answer) => {
+        if (submitted) return; // Prevent changes after submission
         setSelectedAnswers(prev => ({
             ...prev,
             [subId]: answer
@@ -61,6 +69,7 @@ const PreviewPhysicQuestion = () => {
     const handleSubmit = () => {
         if (Object.keys(selectedAnswers).length === subquestions.length) {
             setShowExplanations(true);
+            setSubmitted(true);
             showToast("All answers submitted!", "success");
         } else {
             showToast("Please answer all subquestions before submitting", "error");
@@ -82,44 +91,54 @@ const PreviewPhysicQuestion = () => {
                             <h3>{question.question_text}</h3>
 
                             {/* Display subquestions */}
-                            {subquestions.map((sub, index) => (
-                                <div key={sub.id} className="subquestion">
-                                    <h4>{index + 1}. {sub.subquestion_text}</h4>
+                            {subquestions.map((sub, index) => {
+                                const userAnswer = selectedAnswers[sub.id];
+                                const isCorrect = userAnswer === sub.correct_answer;
+                                const highlightCorrect = submitted && sub.correct_answer;
+                                const highlightUserWrong = submitted && userAnswer && !isCorrect;
 
-                                    <div className="options-group">
-                                        <label className="options">
-                                            <input
-                                                type="radio"
-                                                name={`subquestion-${sub.id}`}
-                                                value="true"
-                                                checked={selectedAnswers[sub.id] === "true"}
-                                                onChange={() => handleSelectAnswer(sub.id, "true")}
-                                            />
-                                            True
-                                        </label>
-                                        <label className="options">
-                                            <input
-                                                type="radio"
-                                                name={`subquestion-${sub.id}`}
-                                                value="false"
-                                                checked={selectedAnswers[sub.id] === "false"}
-                                                onChange={() => handleSelectAnswer(sub.id, "false")}
-                                            />
-                                            False
-                                        </label>
-                                    </div>
+                                return (
+                                    <div key={sub.id} className="subquestion">
+                                        <h4>{index + 1}. {sub.subquestion_text}</h4>
 
-                                    {/* Explanation (hidden until all subquestions answered and submitted) */}
-                                    {showExplanations && (
-                                        <div className="explanations-box">
-                                            <h4>Explanation</h4>
-                                            <p dangerouslySetInnerHTML={{ __html: sub.subquestion_explanation || "No explanation provided." }} />
+                                        <div className="options-group">
+                                            <label className={`options ${highlightCorrect === "true" ? "correct-answer" : ""} ${highlightUserWrong && userAnswer === "true" ? "wrong-answer" : ""}`}>
+                                                <input
+                                                    type="radio"
+                                                    name={`subquestion-${sub.id}`}
+                                                    value="true"
+                                                    checked={userAnswer === "true"}
+                                                    onChange={() => handleSelectAnswer(sub.id, "true")}
+                                                    disabled={submitted}
+                                                />
+                                                True
+                                            </label>
+
+                                            <label className={`options ${highlightCorrect === "false" ? "correct-answer" : ""} ${highlightUserWrong && userAnswer === "false" ? "wrong-answer" : ""}`}>
+                                                <input
+                                                    type="radio"
+                                                    name={`subquestion-${sub.id}`}
+                                                    value="false"
+                                                    checked={userAnswer === "false"}
+                                                    onChange={() => handleSelectAnswer(sub.id, "false")}
+                                                    disabled={submitted}
+                                                />
+                                                False
+                                            </label>
                                         </div>
-                                    )}
-                                </div>
-                            ))}
 
-                            {/* Main Question Explanation (Shown Before Submit Button) */}
+                                        {/* Explanation (hidden until submitted) */}
+                                        {showExplanations && (
+                                            <div className="explanations-box">
+                                                <h4>Explanation</h4>
+                                                <p dangerouslySetInnerHTML={{ __html: sub.subquestion_explanation || "No explanation provided." }} />
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
+
+                            {/* Main Question Explanation */}
                             {showExplanations && question.explanation && (
                                 <div className="explanation-box">
                                     <h4>Question Explanation</h4>
@@ -129,7 +148,7 @@ const PreviewPhysicQuestion = () => {
 
                             <button
                                 onClick={handleSubmit}
-                                disabled={Object.keys(selectedAnswers).length !== subquestions.length}
+                                disabled={Object.keys(selectedAnswers).length !== subquestions.length || submitted}
                                 className="submit-button"
                             >
                                 Submit

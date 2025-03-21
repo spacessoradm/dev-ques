@@ -151,4 +151,21 @@
   cursor: not-allowed;
 }
 
-  
+
+/* Edit Question */
+
+.edit-question-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 70%;
+}
+
+.form-scrollable {
+  flex-grow: 1;
+  overflow-y: auto; /* Enables scrolling */
+  padding: 20px;
+  max-height: calc(100vh - 80px); /* Adjust height */
+  width: 90%; /* Set width to 70% */
+  margin: 0 auto; /* Center it horizontally */
+}

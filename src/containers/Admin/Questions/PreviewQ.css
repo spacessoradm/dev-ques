@@ -105,4 +105,23 @@
     display: block;
 }
 
-  
+.correct-answer {
+  background-color: #d4edda !important;  /* Light green */
+  border: 2px solid #28a745;  /* Green border */
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.wrong-answer {
+  background-color: #f8d7da !important;  /* Light red */
+  border: 2px solid #dc3545;  /* Red border */
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.options-group {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
