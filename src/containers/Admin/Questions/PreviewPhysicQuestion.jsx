@@ -77,8 +77,8 @@ const PreviewPhysicQuestion = () => {
     };
 
     return (
-        <div className="container">
-            <div className='venue-container'>
+        <div className="container" style={{ fontFamily: 'Poppins'}}>
+            <div className='question-container'>
                 {loading && <p>Loading question...</p>}
                 {toastInfo.visible && <Toast message={toastInfo.message} type={toastInfo.type} />}
 
@@ -92,17 +92,29 @@ const PreviewPhysicQuestion = () => {
 
                             {/* Display subquestions */}
                             {subquestions.map((sub, index) => {
-                                const userAnswer = selectedAnswers[sub.id];
-                                const isCorrect = userAnswer === sub.correct_answer;
+                                const userAnswer = selectedAnswers[sub.id]; // User's selected answer
+                                const isCorrect = userAnswer === sub.correct_answer; // True if correct
                                 const highlightCorrect = submitted && sub.correct_answer;
                                 const highlightUserWrong = submitted && userAnswer && !isCorrect;
 
+                                console.log(`Subquestion ${index + 1}:`);
+                                console.log("User Answer:", userAnswer);
+                                console.log("Correct Answer:", sub.correct_answer);
+                                console.log("Is Correct?", isCorrect);
+                                console.log("Highlight Correct?", highlightCorrect);
+                                console.log("Highlight User Wrong?", highlightUserWrong);
+                                
                                 return (
-                                    <div key={sub.id} className="subquestion">
+                                    <div key={sub.id} className="subquestion" style={{ marginTop: '20px'}}>
                                         <h4>{index + 1}. {sub.subquestion_text}</h4>
 
                                         <div className="options-group">
-                                            <label className={`options ${highlightCorrect === "true" ? "correct-answer" : ""} ${highlightUserWrong && userAnswer === "true" ? "wrong-answer" : ""}`}>
+                                            {/* TRUE OPTION */}
+                                            <label className={`options 
+                                                ${submitted && sub.correct_answer === "true" ? "correct-answer" : ""}
+                                                ${submitted && userAnswer === "true" && !isCorrect ? "wrong-answer" : ""}
+                                                ${submitted && userAnswer === "true" && isCorrect ? "selected-correct" : ""}
+                                            `}>
                                                 <input
                                                     type="radio"
                                                     name={`subquestion-${sub.id}`}
@@ -114,7 +126,12 @@ const PreviewPhysicQuestion = () => {
                                                 True
                                             </label>
 
-                                            <label className={`options ${highlightCorrect === "false" ? "correct-answer" : ""} ${highlightUserWrong && userAnswer === "false" ? "wrong-answer" : ""}`}>
+                                            {/* FALSE OPTION */}
+                                            <label className={`options 
+                                                ${submitted && sub.correct_answer === "false" ? "correct-answer" : ""}
+                                                ${submitted && userAnswer === "false" && !isCorrect ? "wrong-answer" : ""}
+                                                ${submitted && userAnswer === "false" && isCorrect ? "selected-correct" : ""}
+                                            `}>
                                                 <input
                                                     type="radio"
                                                     name={`subquestion-${sub.id}`}
@@ -127,7 +144,7 @@ const PreviewPhysicQuestion = () => {
                                             </label>
                                         </div>
 
-                                        {/* Explanation (hidden until submitted) */}
+                                        {/* Explanation (only shown after submission) */}
                                         {showExplanations && (
                                             <div className="explanations-box">
                                                 <h4>Explanation</h4>
@@ -150,6 +167,7 @@ const PreviewPhysicQuestion = () => {
                                 onClick={handleSubmit}
                                 disabled={Object.keys(selectedAnswers).length !== subquestions.length || submitted}
                                 className="submit-button"
+                                style={{ marginTop: '20px'}}
                             >
                                 Submit
                             </button>

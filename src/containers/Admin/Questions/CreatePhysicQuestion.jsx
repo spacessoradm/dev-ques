@@ -9,9 +9,6 @@ import JoditEditor from "jodit-react";
 
 import BackButton from '../../../components/Button/BackArrowButton';
 import Toast from '../../../components/Toast';
-import PlainInput from "../../../components/Input/PlainInput";
-import TextArea from "../../../components/Input/TextArea";
-import SingleSelect from "../../../components/Input/SingleSelect";
 
 
 const CreatePhysicQuestion = () => {
@@ -234,181 +231,182 @@ const CreatePhysicQuestion = () => {
 
             <div className="container">
                 {/* Sidebar */}
-            <div className="sidebar">
-            <h3>Sections</h3>
-            <ul className="subcategory-list">
-                <li
-                className={`main-details ${ question ? "active" : ""}`}
-                style={{marginTop: '12px'}}
-                >
-                Main Details
-                </li>
-                <li>
-                <FaPlusCircle
-                    size={50}  
-                    onClick={addSubQuestionGroup}
-                    style={{
-                        cursor: "pointer",
-                        color: "#4CAF50",
-                        margin: "15px",
-                        }}
-                />
-                </li>
-                <li
-                className={`main-details ${content? "active" : ""}`}
-                style={{marginTop: '12px'}}
-                >
-                Explanation
-                </li>
-            </ul>
-            </div>
-
-            <div className="question-tab" style={{ padding: "12px", width: "75%" }}>
-                {toastInfo.visible && (
-                    <Toast message={toastInfo.message} type={toastInfo.type} />
-                )}
-
-                {error && <div className="error-message">{error}</div>}
-
-                <form onSubmit={handleSubmit} className="" style={{fontFamily: 'Poppins', paddingLeft: '50px', paddingRight: '50px'}}>
-                    <div className="">
-
-                    <div style={{paddingTop: '20px'}}>
-                        <label>Sub-Category*</label>
-                        <input
-                            type="text"
-                            value={subCategoryName}
-                            required
-                            disabled
-                            className="enhanced-input"
-                        />
-                    </div>
-
-                    <div style={{paddingTop: '20px'}}>
-                        <label>Title*</label>
-                        <input
-                            type="text"
-                            value={question}
-                            onChange={(e) => setQuestion(e.target.value)}
-                            required
-                            className="enhanced-input"
-                        />
-                    </div>
-
-                    <div style={{ paddingTop: "20px" }}>
-                        <label>Code*</label>
-                        <input
-                            type="text"
-                            value={formData.unique_code}
-                            onChange={(e) => setFormData({ ...formData, unique_code: e.target.value })}
-                            className="enhanced-input"
-                            placeholder="Auto-generate if left blank"
-                        />
-                    </div>
-
-                    {/* Tabs Navigation */}
-                    <div style={{ display: "flex", marginBottom: "20px", marginTop: '20px' }}>
-                        {["Sub-Question"].map((tab, index) => (
-                        <div
-                            key={index}
-                            onClick={() => handleTabChange(index)}
-                            style={{
-                            backgroundColor: activeTab === index ? "#004c4c" : "#f0f0f0",
-                            color: activeTab === index ? "white" : "black",
-                            }}
-                            className="tab-navigation"
+                <div className="sidebar" style={{ fontFamily: 'Poppins' }}> 
+                    <h3>Sections</h3>
+                    <ul className="subcategory-list">
+                        <li 
+                            className={`main-details ${question ? "active" : ""}`} 
+                            style={{ marginTop: "12px" }}
+                            onClick={() => setActiveTab(0)}
                         >
-                            {tab}
-                        </div>
-                        ))}
-                    </div>
-
-                    {/* Tab Content */}
-                    {activeTab === 0 && (
-                        <div>
-                        {formData.subquestion.map((group, index) => (
-                        <div
-                            key={index}
-                            className="enhanced-input"
-                            style={{marginTop: '20px'}}
+                            Main Details
+                        </li>
+                        {formData.subquestion.map((_, index) => (
+                            <li 
+                                key={index}
+                                className={`subquestion-tab ${activeTab === index + 1 ? "active" : ""}`}
+                                onClick={() => setActiveTab(index + 1)}
                             >
-                            <div style={{ justifyContent: "flex-end", display: "flex"}}>
-                                <FaTimes
-                                    size={25}  
-                                    onClick={() => removeSubQuestionGroup(index)}
-                                    style={{
-                                    cursor: "pointer",
-                                    margin: "15px",
-                                    }}
-                                />
-                            </div>
-                            
-                            <div className=''>
-                                <label>Question*</label>
-                                <input
-                                    type="text"
-                                    value={group.subquestion_title}
-                                    onChange={(e) =>
-                                    handleSubQuestionChange(index, "subquestion_title", e.target.value)
-                                    }
-                                    className="enhanced-input"
-                                />
-                            </div>
+                                Sub-Question {index + 1}
+                            </li>
+                        ))}
+                        <li>
+                            <button
+                                type="button"
+                                className="addbtn"
+                                onClick={addSubQuestionGroup}
+                            >
+                                +
+                            </button>
+                        </li>
+                        <li 
+                            className={`main-details ${content ? "active" : ""}`} 
+                            style={{ marginTop: "12px" }}
+                            onClick={() => setActiveTab(formData.subquestion.length + 1)}
+                        >
+                            Explanation
+                        </li>
+                    </ul>
+                </div>
 
-                            <div style={{paddingTop: '20px'}}>
-                                <label>Answer*</label>
-                                <select
-                                    value={group.subquestion_answer}
-                                    onChange={(e) =>
-                                        handleSubQuestionChange(index, "subquestion_answer", e.target.value)
-                                    }
-                                    className="enhanced-input"
-                                >
-                                    <option value="">Select Answer</option>
-                                    <option value="true">True</option>
-                                    <option value="false">False</option>
-                                </select>
-                            </div>
-
-                            <div style={{paddingTop: '20px'}}>
-                                <label>Explanation*</label>
-                                <JoditEditor 
-                                ref={editor} 
-                                value={formData.subquestion[index].subquestion_explanation} 
-                                onChange={(value) => handleSubQuestionChange(index, "subquestion_explanation", value)} 
-                                className="enhanced-input"
-                                />
-                            </div>
-                        </div>
-                            ))
-                        }
-                            <FaPlusCircle
-                            size={50}  
-                            onClick={addSubQuestionGroup}
-                            style={{
-                                cursor: "pointer",
-                                color: "#4CAF50",
-                                margin: "15px",
-                                }}
-                            />
-                        </div>
+                <div className="question-tab" style={{ padding: "12px", width: "75%" }}>
+                    {toastInfo.visible && (
+                        <Toast message={toastInfo.message} type={toastInfo.type} />
                     )}
 
-                    <div style={{paddingTop: '20px'}}>
-                        <label>Explanation*</label>
-                        <JoditEditor 
-                            value={content} 
-                            onChange={newContent => setContent(renderMath(newContent))} 
-                            className="enhanced-input"
-                        />
-                    </div>
+                    {error && <div className="error-message">{error}</div>}
 
-                    <button type="submit" className="submit-btn" disabled={loading}>
-                        {loading ? 'Creating...' : 'Create'}
-                    </button>
-                    </div>
-                </form>
-            </div>
+                    <form onSubmit={handleSubmit} className="" style={{fontFamily: 'Poppins', paddingLeft: '50px', paddingRight: '50px'}}>
+                        <div className="">
+
+                        <div style={{paddingTop: '20px'}}>
+                            <label>Sub-Category*</label>
+                            <input
+                                type="text"
+                                value={subCategoryName}
+                                required
+                                disabled
+                                className="enhanced-input"
+                            />
+                        </div>
+
+                        <div style={{paddingTop: '20px'}}>
+                            <label>Title*</label>
+                            <input
+                                type="text"
+                                value={question}
+                                onChange={(e) => setQuestion(e.target.value)}
+                                required
+                                className="enhanced-input"
+                            />
+                        </div>
+
+                        <div style={{ paddingTop: "20px" }}>
+                            <label>Code*</label>
+                            <input
+                                type="text"
+                                value={formData.unique_code}
+                                onChange={(e) => setFormData({ ...formData, unique_code: e.target.value })}
+                                className="enhanced-input"
+                                placeholder="Auto-generate if left blank"
+                            />
+                        </div>
+
+                        {/* Tabs Navigation */}
+                        <div style={{ display: "flex", marginBottom: "20px", marginTop: '20px' }}>
+                            {["Sub-Question"].map((tab, index) => (
+                            <div
+                                key={index}
+                                onClick={() => handleTabChange(index)}
+                                style={{
+                                backgroundColor: activeTab === index ? "#004c4c" : "#f0f0f0",
+                                color: activeTab === index ? "white" : "black",
+                                }}
+                                className="tab-navigation"
+                            >
+                                {tab}
+                            </div>
+                            ))}
+                        </div>
+
+                        {/* Tab Content */}
+                        {activeTab === 0 && (
+                            <div>
+                            {formData.subquestion.map((group, index) => (
+                            <div
+                                key={index}
+                                className="enhanced-input"
+                                style={{marginTop: '20px'}}
+                                >
+                                <div style={{ justifyContent: "flex-end", display: "flex"}}>
+                                    <FaTimes
+                                        size={25}  
+                                        onClick={() => removeSubQuestionGroup(index)}
+                                        style={{
+                                        cursor: "pointer",
+                                        margin: "15px",
+                                        }}
+                                    />
+                                </div>
+                                
+                                <div className=''>
+                                    <label>Question*</label>
+                                    <input
+                                        type="text"
+                                        value={group.subquestion_title}
+                                        onChange={(e) =>
+                                        handleSubQuestionChange(index, "subquestion_title", e.target.value)
+                                        }
+                                        className="enhanced-input"
+                                    />
+                                </div>
+
+                                <div style={{paddingTop: '20px'}}>
+                                    <label>Answer*</label>
+                                    <select
+                                        value={group.subquestion_answer}
+                                        onChange={(e) =>
+                                            handleSubQuestionChange(index, "subquestion_answer", e.target.value)
+                                        }
+                                        className="enhanced-input"
+                                    >
+                                        <option value="">Select Answer</option>
+                                        <option value="true">True</option>
+                                        <option value="false">False</option>
+                                    </select>
+                                </div>
+
+                                <div style={{paddingTop: '20px'}}>
+                                    <label>Explanation*</label>
+                                    <JoditEditor 
+                                    ref={editor} 
+                                    value={formData.subquestion[index].subquestion_explanation} 
+                                    onChange={(value) => handleSubQuestionChange(index, "subquestion_explanation", value)} 
+                                    className="enhanced-input"
+                                    />
+                                </div>
+                            </div>
+                                ))
+                            }
+                            </div>
+                        )}
+
+                        <div style={{paddingTop: '20px'}}>
+                            <label>Explanation*</label>
+                            <JoditEditor 
+                                value={content} 
+                                onChange={newContent => setContent(renderMath(newContent))} 
+                                className="enhanced-input"
+                                style={{ innerHeight: '250px' }}
+                            />
+                        </div>
+
+                        <button type="submit" className="submit-btn" disabled={loading}>
+                            {loading ? 'Creating...' : 'Create'}
+                        </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     );

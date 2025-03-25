@@ -158,7 +158,7 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  width: 70%;
+  width: 100%;
 }
 
 .form-scrollable {
@@ -168,4 +168,22 @@
   max-height: calc(100vh - 80px); /* Adjust height */
   width: 90%; /* Set width to 70% */
   margin: 0 auto; /* Center it horizontally */
+}
+
+/* for text-field writing space height */
+.jodit-wysiwyg {
+  height: 250px !important;
+}
+
+/* 2A options - edit 2A questions */
+.option-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.option-label {
+  font-weight: bold;
+  font-size: 16px;
 }

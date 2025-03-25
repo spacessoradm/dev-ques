@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import supabase from '../../../config/supabaseClient';
-import { FaMinusCircle, FaPlusCircle } from "react-icons/fa";
+import { FaMinusCircle, FaPlusCircle, FaTimes } from "react-icons/fa";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import "katex/dist/katex.min.css";
+import katex from "katex";
+import JoditEditor from "jodit-react";
 import './CreateBooking.css';
 
 import BackButton from '../../../components/Button/BackArrowButton';
@@ -49,6 +52,8 @@ const EditPhysicQuestion = () => {
         fetchQuestion();
     }, [id]);
 
+    const editor = useRef(null)
+
     const showToast = (message, type) => {
         setToastInfo({ visible: true, message, type });
         setTimeout(() => setToastInfo({ visible: false, message: '', type: '' }), 3000);
@@ -78,7 +83,7 @@ const EditPhysicQuestion = () => {
             await handleSaveSubQuestions(id, formData.subquestion);
 
             showToast("Question updated successfully!", "success");
-            navigate('/admin/bookings');
+            navigate('/admin/questions/physic');
         } catch (error) {
             setError(error.message);
             showToast(`Error updating question: ${error.message}`, "error");
@@ -131,27 +136,65 @@ const EditPhysicQuestion = () => {
     if (!formData) return <p>Loading...</p>;
 
     return (
-        <div className="edit-physic-question-container">
-            <BackButton to="/admin/bookings" />
+        <div className="edit-physic-question-container" style={{ fontFamily: 'Poppins', width: '100%'}}>
+            <BackButton to="/admin/questions/physic" />
             <h2>Edit Question</h2>
             {toastInfo.visible && <Toast message={toastInfo.message} type={toastInfo.type} />}
             {error && <div className="error-message">{error}</div>}
-            <form onSubmit={handleSubmit} className='outsider'>
+            <form onSubmit={handleSubmit} style={{ padding: '30px'}}>
                 <div className='insider'>
-                <PlainInput label="Question" type="text" name="question_text" value={formData.question_text} onChange={handleChange} required />
-                <SingleSelect label="Question Type" name="question_type" value={formData.question_type} onChange={handleChange} options={[{ label: "Sub-Questions", value: "subq" }]} required />
-                <ReactQuill theme="snow" value={formData.explanation} onChange={(value) => setFormData({ ...formData, explanation: value })} className="enhanced-input" />
-                <h3>Sub Questions</h3>
-                {formData.subquestion.map((sq, index) => (
-                    <div key={index}>
-                        <PlainInput label="Sub-Question" type="text" value={sq.subquestion_text} onChange={(e) => handleSubQuestionChange(index, "subquestion_text", e.target.value)} required />
-                        <PlainInput label="Answer" type="text" value={sq.subquestion_answer} onChange={(e) => handleSubQuestionChange(index, "subquestion_answer", e.target.value)} required />
-                        <ReactQuill theme="snow" value={sq.subquestion_explanation} onChange={(value) => handleSubQuestionChange(index, "subquestion_explanation", value)} className="enhanced-input" />
-                        <FaMinusCircle size={30} onClick={() => removeSubQuestionGroup(index)} style={{ cursor: "pointer", color: "#f44336", margin: "10px" }} />
+                    <PlainInput label="Main Question" type="text" name="question_text" value={formData.question_text} onChange={handleChange} required />
+                    <SingleSelect label="Question Type" name="question_type" value={formData.question_type} onChange={handleChange} options={[{ label: "Sub-Questions", value: "subq" }]} required />
+                    
+                    <h3>Sub Questions</h3>
+                    {formData.subquestion.map((sq, index) => (
+                        <div key={index}>
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: '50px' }}>
+                                <h4>Sub-Question {index + 1}</h4>
+                                <FaTimes 
+                                    size={30} 
+                                    onClick={() => removeSubQuestionGroup(index)} 
+                                    style={{ cursor: "pointer", color: "#f44336", marginLeft: "10px" }} 
+                                />
+                            </div>
+                            <PlainInput 
+                                label="Question" 
+                                type="text" 
+                                value={sq.subquestion_text} 
+                                onChange={(e) => handleSubQuestionChange(index, "subquestion_text", e.target.value)} 
+                                required 
+                            />
+                            <PlainInput 
+                                label="Answer" 
+                                type="text" 
+                                value={sq.subquestion_answer} 
+                                onChange={(e) => handleSubQuestionChange(index, "subquestion_answer", e.target.value)} 
+                                required 
+                            />
+                            
+                            <div style={{paddingTop: '20px'}}>
+                                <label>Explanation</label>
+                                <JoditEditor 
+                                    ref={editor} 
+                                    value={sq.subquestion_explanation} 
+                                    onChange={(value) => handleSubQuestionChange(index, "subquestion_explanation", value)} 
+                                    className="enhanced-input"
+                                />
+                            </div>
+                        </div>
+                    ))}
+                    <FaPlusCircle size={30} onClick={addSubQuestionGroup} style={{ cursor: "pointer", color: "#4CAF50", margin: "10px" }} />
+
+                    <div style={{paddingTop: '20px'}}>
+                        <label>Explanation*</label>
+                        <JoditEditor 
+                            ref={editor} 
+                            value={formData.explanation} 
+                            onChange={(value) => setFormData({ ...formData, explanation: value })} 
+                            className="enhanced-input"
+                        />
                     </div>
-                ))}
-                <FaPlusCircle size={30} onClick={addSubQuestionGroup} style={{ cursor: "pointer", color: "#4CAF50", margin: "10px" }} />
-                <button type="submit" className="submit-btn" disabled={loading}>{loading ? 'Updating...' : 'Update'}</button>
+                    <button type="submit" className="submit-btn" disabled={loading}>{loading ? 'Updating...' : 'Update'}</button>
                 </div>
             </form>
         </div>

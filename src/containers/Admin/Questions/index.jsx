@@ -318,13 +318,29 @@ const Questions = () => {
                       {menuOpen === question.id && (
                         <div className="menu-dropdown">
                           <button 
-                            className="menu-item view" 
-                            onClick={() => navigate(`/admin/bookings/preview/${question.id}`)}>
+                            className="menu-item view"
+                            onClick={() => {
+                              if (parentId == '3') {
+                                  // Navigate to sub-question edit page if parent_id is 3 or 4
+                                  navigate(`/admin/questions/preview/${question.id}`);
+                              } else {
+                                  // Otherwise, navigate to the main question edit page
+                                  navigate(`/admin/questions/previewphysic/${question.id}`);
+                              }
+                            }}>
                               <FaEye /> View
                           </button>
                           <button 
                             className="menu-item edit" 
-                            onClick={() => navigate(`/admin/questions/edit/${question.id}`)}>
+                            onClick={() => {
+                              if (parentId == '3') {
+                                  // Navigate to sub-question edit page if parent_id is 3 or 4
+                                  navigate(`/admin/questions/edit/${question.id}`);
+                              } else {
+                                  // Otherwise, navigate to the main question edit page
+                                  navigate(`/admin/questions/editphysic/${question.id}`);
+                              }
+                            }}>
                               <FaEdit /> Edit
                           </button>
                           <button 

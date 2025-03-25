@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import supabase from "../../../config/supabaseClient";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+import "katex/dist/katex.min.css";
+import katex from "katex";
+import JoditEditor from "jodit-react";
 import "./CreateBooking.css";
 
 import BackButton from "../../../components/Button/BackArrowButton";
@@ -133,17 +134,21 @@ const EditQuestion = () => {
                         <div>
                             <label>Options</label>
                             {formData.options.map((option, index) => (
-                                <PlainInput
-                                    key={index}
-                                    type="text"
-                                    value={option}
-                                    onChange={(e) => {
-                                        const newOptions = [...formData.options];
-                                        newOptions[index] = e.target.value;
-                                        setFormData((prev) => ({ ...prev, options: newOptions }));
-                                    }}
-                                    required
-                                />
+                                <div key={index} className="option-container">
+                                    <span className="option-label">{String.fromCharCode(65 + index)}.</span>
+                                    <input
+                                        type="text"
+                                        value={option}
+                                        onChange={(e) => {
+                                            const newOptions = [...formData.options];
+                                            newOptions[index] = e.target.value;
+                                            setFormData((prev) => ({ ...prev, options: newOptions }));
+                                        }}
+                                        className="enhanced-input"
+                                        style={{ width: '1000px' }}
+                                        required
+                                    />
+                                </div>
                             ))}
                         </div>
                     )}
@@ -169,14 +174,10 @@ const EditQuestion = () => {
                     {/* Explanation */}
                     <div className="field-container">
                         <label>Explanation:</label>
-                        <ReactQuill
-                            theme="snow"
-                            value={formData.explanation}
-                            onChange={(value) => setFormData((prev) => ({ ...prev, explanation: value }))}
-                            modules={{
-                                toolbar: [[{ header: [1, 2, false] }], ["bold", "italic", "underline"], [{ list: "ordered" }, { list: "bullet" }], ["link", "image"]],
-                            }}
-                            className="enhanced-input"
+                        <JoditEditor 
+                                value={formData.explanation} 
+                                onChange={(value) => setFormData((prev) => ({ ...prev, explanation: value }))} 
+                                className="enhanced-input"
                         />
                     </div>
 

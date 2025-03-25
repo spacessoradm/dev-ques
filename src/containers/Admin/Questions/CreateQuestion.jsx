@@ -124,8 +124,6 @@ const CreateQuestion = () => {
         setLoading(false);
     }
 };
-
-  
   
   const handleQuestionTypeChange = (value) => {
     setQuestionType(value);
