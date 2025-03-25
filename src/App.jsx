@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import HomePage from './containers/Authentication/HomePage/index';
 import Demo from './containers/Authentication/HomePage/demo';
+import PhysicsExam from './containers/Authentication/HomePage/PhysicQuestionExam';
 import QuestionBank from './containers/Authentication/HomePage/questionbank';
 import Login from './containers/Authentication/Login/index';
 import ForgetPassword from './containers/Authentication/ForgetPassword/index';
@@ -23,29 +24,15 @@ import AdminDashboard from './containers/Admin/Admin_Dashboard';
 
 //Ques
 
-import Vibes from './containers/Admin/Vibe/index.jsx';
-import CreateVibe from './containers/Admin/Vibe/CreateVibe';
-import ViewVibe from './containers/Admin/Vibe/ViewVibe';
-import EditVibe from './containers/Admin/Vibe/EditVibe';
-
-import Venues from './containers/Admin/Venues/index.jsx';
-import CreateVenue from './containers/Admin/Venues/CreateVenue';
-//import ViewVenue from './containers/Admin/Venues/ViewVenue';
-import EditVenue from './containers/Admin/Venues/EditVenue';
-import CreateRandomGallery from './containers/Admin/Venues/CreateRandomGallery';
-import CreateVenueGallery from './containers/Admin/Venues/CreateGallery';
-import AddVenuePromotion from './containers/Admin/Venues/CreatePromotion';
-import EditDamage from './containers/Admin/Venues/EditDamage';
-import EditMenu from './containers/Admin/Venues/EditMenu';
-import EditVenueRedeemItem from './containers/Admin/Venues/EditRedeemItem';
-
 import Bookings from './containers/Admin/Bookings/index.jsx';
-import PreviewQuestion from './containers/Admin/Bookings/PreviewQuestion.jsx';
-import PreviewPhysicQuestion from './containers/Admin/Bookings/PreviewPhysicQuestion.jsx';
+
 import CreateQuestion from './containers/Admin/Bookings/CreateQuestion.jsx';
 import CreatePhysicQuestion from './containers/Admin/Bookings/CreatePhysicQuestion.jsx';
+
 import EditQuestion from './containers/Admin/Questions/EditQuestion.jsx';
-import EditPhysicQuestion from './containers/Admin/Bookings/EditPhysicQuestion.jsx';
+import EditPhysicQuestion from './containers/Admin/Questions/EditPhysicQuestion.jsx';
+import PreviewQuestion from './containers/Admin/Questions/PreviewQuestion.jsx';
+import PreviewPhysicQuestion from './containers/Admin/Questions/PreviewPhysicQuestion.jsx';
 
 import Questions from './containers/Admin/Questions/index.jsx';
 import CreateQues from './containers/Admin/Questions/CreateQuestion.jsx';
@@ -156,6 +143,7 @@ const App = () => {
                     {/* Authentication Routes */}
                     <Route path="/homepage" element={<HomePage />} />
                     <Route path="/demo" element={<Demo />} />
+                    <Route path="/physicsexam" element={<PhysicsExam />} />
                     <Route path="/Chiongster/questionbank/:categoryParam" element={<QuestionBank />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/forgetpassword" element={<ForgetPassword />} />
@@ -342,118 +330,6 @@ const App = () => {
                             />
 
                             <Route
-                                path="/admin/vibe"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <Vibes />
-                                    </AdminLayout>
-                                }
-                            />
-                            <Route
-                                path="/admin/vibe/create"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <CreateVibe />
-                                    </AdminLayout>
-                                }
-                            />
-                            <Route
-                                path="/admin/vibe/view/:id"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <ViewVibe />
-                                    </AdminLayout>
-                                }
-                            />
-                            <Route
-                                path="/admin/vibe/edit/:id"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <EditVibe />
-                                    </AdminLayout>
-                                }
-                            />
-
-                            <Route
-                                path="/admin/venues"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <Venues />
-                                    </AdminLayout>
-                                }
-                            />
-                            <Route
-                                path="/admin/venues/create"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <CreateVenue />
-                                    </AdminLayout>
-                                }
-                            />
-                            <Route
-                                path="/admin/venues/edit/:id"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <EditVenue />
-                                    </AdminLayout>
-                                }
-                            />
-
-                            <Route
-                                path="/admin/venues/createrandom/:id"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <CreateRandomGallery />
-                                    </AdminLayout>
-                                }
-                            />
-
-                            <Route
-                                path="/admin/venues/create/:id"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <CreateVenueGallery />
-                                    </AdminLayout>
-                                }
-                            />
-
-                            <Route
-                                path="/admin/venues/addpromotion/:id"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <AddVenuePromotion />
-                                    </AdminLayout>
-                                }
-                            />
-
-                            <Route
-                                path="/admin/venues/editdamage/:id"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <EditDamage />
-                                    </AdminLayout>
-                                }
-                            />
-
-                            <Route
-                                path="/admin/venues/editmenu/:id"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <EditMenu />
-                                    </AdminLayout>
-                                }
-                            />
-
-                            <Route
-                                path="/admin/venues/editredeemitem/:id"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <EditVenueRedeemItem />
-                                    </AdminLayout>
-                                }
-                            />
-
-                            <Route
                                 path="/admin/blogs"
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
@@ -496,24 +372,6 @@ const App = () => {
                             />
 
                             <Route
-                                path="/admin/bookings/preview/:id"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <PreviewQuestion />
-                                    </AdminLayout>
-                                }
-                            />
-
-<Route
-                                path="/admin/bookings/previewphysic/:id"
-                                element={
-                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
-                                        <PreviewPhysicQuestion />
-                                    </AdminLayout>
-                                }
-                            />
-
-                            <Route
                                 path="/admin/bookings/create/:subCategoryName"
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
@@ -540,10 +398,28 @@ const App = () => {
                             />
 
                             <Route
-                                path="/admin/bookings/editphysic/:id"
+                                path="/admin/questions/editphysic/:id"
                                 element={
                                     <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
                                         <EditPhysicQuestion/>
+                                    </AdminLayout>
+                                }
+                            />
+
+                            <Route
+                                path="/admin/questions/preview/:id"
+                                element={
+                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
+                                        <PreviewQuestion />
+                                    </AdminLayout>
+                                }
+                            />
+
+                            <Route
+                                path="/admin/questions/previewphysic/:id"
+                                element={
+                                    <AdminLayout isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
+                                        <PreviewPhysicQuestion />
                                     </AdminLayout>
                                 }
                             />
