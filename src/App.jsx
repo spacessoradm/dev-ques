@@ -149,7 +149,7 @@ const App = () => {
                     <Route path="/demo" element={<Demo />} />
                     <Route path="/physicsexam" element={<PhysicsExam />} />
                     <Route path="/exam" element={<Exam />} />
-                    <Route path="/Chiongster/questionbank/:categoryParam" element={<QuestionBank />} />
+                    <Route path="/Quesbank/questionbank/:categoryParam" element={<QuestionBank />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/forgetpassword" element={<ForgetPassword />} />
                     <Route path="/resetpassword" element={<ResetPassword />} />
