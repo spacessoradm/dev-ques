@@ -33,7 +33,7 @@ const QuestionDisplay = () => {
         const handleSignOut = () => {
             localStorage.removeItem("profileId"); // Clear token
             setIsLoggedIn(false);
-            window.location.href = "/Chiongster/homepage"; // Redirect to homepage (optional)
+            window.location.href = "/Quesbank/homepage"; // Redirect to homepage (optional)
         };
         
         const handleAccept = () => {
@@ -200,7 +200,7 @@ const QuestionDisplay = () => {
         <main className="main">
             <header className="main-nav" style={{ fontFamily: 'Poppins' }}>
                 <div className="flex items-center">
-                <a href="/Chiongster/homepage" className="logo">
+                <a href="/Quesbank/homepage" className="logo">
                     <img src="https://vuhurnvoeziyugrmjiqs.supabase.co/storage/v1/object/public/general//acefrcr_logo.jpeg" alt="logo" style={{ width: '100px', height: '100px' }} />
                 </a>
                 </div>
@@ -268,10 +268,10 @@ const QuestionDisplay = () => {
                 </>
             ) : (
                 <>
-                <a href="/Chiongster/login" className="btn btn-outline">
+                <a href="/Quesbank/login" className="btn btn-outline">
                     Sign in
                 </a>
-                <a href="/Chiongster/demo" className="btn btn-dashboard">
+                <a href="/Quesbank/demo" className="btn btn-dashboard">
                     Try a Demo
                 </a>
                 </>
