@@ -783,6 +783,18 @@
   .btn-outline:hover {
     background-color: var(--gray-100);
   }
+
+  .btn-dashboard {
+    background-color: #004c4c;
+    color: var(--white);
+    border: none;
+  }
+
+  .btn-dashboard:hover {
+    background-color: transparent;
+    color: #004c4c;
+    border: solid 1px #004c4c;
+  }
   
   .hero-section {
     display: flex;

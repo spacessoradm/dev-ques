@@ -11,6 +11,7 @@ export default function HomePage() {
   const [testimonials, setTestimonials] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [userRole, setUserRole] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
@@ -53,6 +54,20 @@ export default function HomePage() {
       } else {
         setCategories(data);
       }
+
+      const { data: userRoleData, error: userRoleDataError } = await supabase
+        .from("profiles")
+        .select("role_id")
+        .eq("id", profileId);
+
+
+      console.log(userRoleData);
+
+      if (userRoleDataError) {
+        console.error("Error fetching role data:", userRoleDataError);
+      } else {
+        setUserRole(userRoleData);
+      }
     };
 
     if (profileId) {
@@ -80,101 +95,99 @@ export default function HomePage() {
       {/* Top navigation bar */}
 
       {/* Main navigation */}
-      <header className="main-nav">
-        <div className="flex items-center">
-          <a href="/" className="logo">
-            <div className="logo-icon">
-              <div className="logo-circle">
-                <Check className="h-5 w-5 text-white" />
-              </div>
-            </div>
-            <span className="text-primary text-xl font-medium">
-              Ace<span className="font-normal">FRCR</span>
-            </span>
-          </a>
-        </div>
+      <header className="main-nav" style={{ fontFamily: 'Poppins' }}>
+                <div className="flex items-center">
+                <a href="/Chiongster/homepage" className="logo">
+                    <img src="https://vuhurnvoeziyugrmjiqs.supabase.co/storage/v1/object/public/general//acefrcr_logo.jpeg" alt="logo" style={{ width: '100px', height: '100px' }} />
+                </a>
+                </div>
 
-        <nav className="nav-menu">
-          <div className="nav-item">
-            <span className="text-gray-600">Product</span>
-            <ChevronDown className="h-4 w-4 ml-1 text-gray-600" />
-          </div>
-          <div className="nav-item">
-            <span className="text-gray-600">Use cases</span>
-            <ChevronDown className="h-4 w-4 ml-1 text-gray-600" />
-          </div>
-          <a href="#" className="nav-link">
-            Pricing
-          </a>
-          <div className="nav-item">
-            <span className="text-gray-600">Resources</span>
-            <ChevronDown className="h-4 w-4 ml-1 text-gray-600" />
-          </div>
-          {isLoggedIn && (
-          <div className="nav-item relative">
-            <div
-              className="flex items-center cursor-pointer"
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            >
-              <span className="text-gray-600">Question Bank</span>
-              <ChevronDown
-                className={`h-4 w-4 ml-1 text-gray-600 transition-transform ${
-                  isDropdownOpen ? "rotate-180" : ""
-                }`}
-              />
-            </div>
-
-            {isDropdownOpen && (
-              <div className="dropdown-menu">
-                {categories.length > 0 ? (
-                  categories.map((item, index) => (
-                    <button
-                      key={index}
-                      onClick={() => navigate(`/Chiongster/questionbank/${item.category}`)}
-                      className="dropdown-item"
+                <nav className="nav-menu">
+                <div className="nav-item">
+                    <span className="text-gray-600">Product</span>
+                    <ChevronDown className="h-4 w-4 ml-1 text-gray-600" />
+                </div>
+                <div className="nav-item">
+                    <span className="text-gray-600">Use cases</span>
+                    <ChevronDown className="h-4 w-4 ml-1 text-gray-600" />
+                </div>
+                <a href="#" className="nav-link">
+                    Pricing
+                </a>
+                <div className="nav-item">
+                    <span className="text-gray-600">Resources</span>
+                    <ChevronDown className="h-4 w-4 ml-1 text-gray-600" />
+                </div>
+                {isLoggedIn && (
+                <div className="nav-item relative">
+                    <div
+                    className="flex items-center cursor-pointer"
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     >
-                      {item.category}
-                    </button>
-                  ))
-                ) : (
-                  <div className="dropdown-item text-gray-500">No categories</div>
-                )}
-              </div>
-            )}
-          </div>
-        )}
-        </nav>
+                    <span className="text-gray-600">Question Bank</span>
+                    <ChevronDown
+                        className={`h-4 w-4 ml-1 text-gray-600 transition-transform ${
+                        isDropdownOpen ? "rotate-180" : ""
+                        }`}
+                    />
+                    </div>
 
-        <div className="flex items-center space-x-4">
-        {isLoggedIn ? (
-        <>
-          <a
-            href={isLoggedIn ? "admin/dashboard" : "#"}
-            className={`btn btn-primary ${!isLoggedIn ? "disabled-link" : ""}`}
-            aria-disabled={!isLoggedIn}
-            onClick={(e) => !isLoggedIn && e.preventDefault()} // Prevent navigation
-          >
-            Dashboard
-          </a>
-          <button onClick={handleSignOut} className="btn btn-outline">
-            Sign Out
-          </button>
-        </>
-      ) : (
-        <>
-          <a href="/Chiongster/login" className="btn btn-outline">
-            Sign in
-          </a>
-          <a href="#" className="btn btn-primary">
-            Book a demo
-          </a>
-        </>
-      )}
-        </div>
+                    {isDropdownOpen && (
+                    <div className="dropdown-menu">
+                      <a  
+                          style={{ padding: '6px' }}
+                          href={isLoggedIn ? "exam" : "#"}
+                          aria-disabled={!isLoggedIn}
+                          onClick={(e) => !isLoggedIn && e.preventDefault()} // Prevent navigation
+                      >
+                          2A Exam
+                      </a>
+                      <br />
+                      <a
+                          style={{ padding: '6px' }}
+                          href={isLoggedIn ? "physicsexam" : "#"}
+                          aria-disabled={!isLoggedIn}
+                          onClick={(e) => !isLoggedIn && e.preventDefault()} // Prevent navigation
+                      >
+                          Physics Exam
+                      </a>
+                    </div>
+                    )}
+                </div>
+                )}
+                </nav>
+
+                <div className="flex items-center space-x-4">
+                {isLoggedIn ? (
+                <>
+                <a
+                    href={isLoggedIn ? (userRole[0]?.role_id === 1 ? "admin/dashboard" : "user/examrecords") : "#"}
+                    className={`btn btn-dashboard ${!isLoggedIn ? "disabled-link" : ""}`}
+                    aria-disabled={!isLoggedIn}
+                    onClick={(e) => !isLoggedIn && e.preventDefault()} // Prevent navigation when not logged in
+                >
+                    Dashboard
+                </a>
+
+                <button onClick={handleSignOut} className="btn btn-outline">
+                    Sign Out
+                </button>
+                </>
+            ) : (
+                <>
+                <a href="/Chiongster/login" className="btn btn-outline">
+                    Sign in
+                </a>
+                <a href="/Chiongster/demo" className="btn btn-dashboard">
+                    Try a Demo
+                </a>
+                </>
+            )}
+                </div>
       </header>
 
       {/* Hero section */}
-      <section className="hero-section">
+      <section className="hero-section" style={{fontFamily: "Poppins"}}>
         <div className="hero-content">
           <h1 className="text-4xl font-bold text-secondary mb-6">
             Flexible and secure platform for comprehensive assessments
@@ -185,11 +198,8 @@ export default function HomePage() {
             single, powerful web platform.
           </p>
           <div className="flex flex-col sm-flex-row gap-4">
-            <a href="/Chiongster/demo" className="btn btn-primary w-full sm-w-auto">
-              Book a demo
-            </a>
-            <a href="/try" className="btn btn-outline w-full sm-w-auto">
-              Try free
+            <a href="/Chiongster/demo" className="btn btn-dashboard w-full sm-w-auto">
+              Try a Demo
             </a>
           </div>
         </div>
