@@ -2,7 +2,8 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import HomePage from './containers/Authentication/HomePage/index';
 import Demo from './containers/Authentication/HomePage/demo';
-import PhysicsExam from './containers/Authentication/HomePage/PhysicQuestionExam';
+import Exam from './containers/Authentication/HomePage/QuestionExam';
+import PhysicsExam from './containers/Authentication/HomePage/PhysicsQuestionExam.jsx';
 import QuestionBank from './containers/Authentication/HomePage/questionbank';
 import Login from './containers/Authentication/Login/index';
 import ForgetPassword from './containers/Authentication/ForgetPassword/index';
@@ -19,8 +20,10 @@ import Dashboard from './containers/Client/Dashboard';*/
 
 // Admin Components
 import AdminLayout from './components/AdminLayout';
+import UserLayout from './components/UserLayout';
 import SideNavBar from './containers/Admin/Admin_Navigation/SideNavBar';
 import AdminDashboard from './containers/Admin/Admin_Dashboard';
+import UserDashboard from './containers/User/User_Dashboard';
 
 //Ques
 
@@ -99,6 +102,8 @@ import RunningNumbers from './containers/Admin/Running_Numbers/index.jsx';
 import CreateRunningNumber from './containers/Admin/Running_Numbers/CreateRunningNumber';
 import EditRunningNumber from './containers/Admin/Running_Numbers/EditRunningNumber';
 
+import ExamRecords from './containers/User/ExamRecords/index.jsx';
+
 import { AuthClient } from '@supabase/supabase-js';
 
 
@@ -144,11 +149,14 @@ const App = () => {
                     <Route path="/homepage" element={<HomePage />} />
                     <Route path="/demo" element={<Demo />} />
                     <Route path="/physicsexam" element={<PhysicsExam />} />
+                    <Route path="/exam" element={<Exam />} />
                     <Route path="/Chiongster/questionbank/:categoryParam" element={<QuestionBank />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/forgetpassword" element={<ForgetPassword />} />
                     <Route path="/resetpassword" element={<ResetPassword />} />
                     <Route path="/signup" element={<Signup />} />
+
+                    <Route path="user/examrecords" element={<ExamRecords />} />
 
                     {uR === "user" && (
                         <>
