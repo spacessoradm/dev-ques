@@ -97,7 +97,7 @@ export default function HomePage() {
       {/* Main navigation */}
       <header className="main-nav" style={{ fontFamily: 'Poppins' }}>
                 <div className="flex items-center">
-                <a href="/Chiongster/homepage" className="logo">
+                <a href="/Quesbank/homepage" className="logo">
                     <img src="https://vuhurnvoeziyugrmjiqs.supabase.co/storage/v1/object/public/general//acefrcr_logo.jpeg" alt="logo" style={{ width: '100px', height: '100px' }} />
                 </a>
                 </div>
@@ -175,10 +175,10 @@ export default function HomePage() {
                 </>
             ) : (
                 <>
-                <a href="/Chiongster/login" className="btn btn-outline">
+                <a href="/Quesbank/login" className="btn btn-outline">
                     Sign in
                 </a>
-                <a href="/Chiongster/demo" className="btn btn-dashboard">
+                <a href="/Quesbank/demo" className="btn btn-dashboard">
                     Try a Demo
                 </a>
                 </>
@@ -198,7 +198,7 @@ export default function HomePage() {
             single, powerful web platform.
           </p>
           <div className="flex flex-col sm-flex-row gap-4">
-            <a href="/Chiongster/demo" className="btn btn-dashboard w-full sm-w-auto">
+            <a href="/Quesbank/demo" className="btn btn-dashboard w-full sm-w-auto">
               Try a Demo
             </a>
           </div>
