@@ -116,7 +116,26 @@ const QuestionExam = () => {
                     const shuffledQuestions = shuffleArray(questionsData);
                     setQuestions(shuffledQuestions);
                     resetProgress(shuffledQuestions, newCycle); // Pass new cycle value
-                } else {
+                } else if (savedProgress.currentIndex == 0) {
+                    // 继续上次进度
+                    setCycle(savedProgress.cycle || 1);
+                    setCurrentIndex(savedProgress.currentIndex || 0);
+                    setSelectedAnswers(savedProgress.selectedAnswers || {});
+                    setCorrectAnswersCount(savedProgress.correctAnswersCount || 0);
+                    setCorrectQuestions(savedProgress.correctQuestions || []);
+                    setIncorrectQuestions(savedProgress.incorrectQuestions || []);
+                    
+
+                    const reorderedQuestions = savedProgress.questionOrder
+                        ? savedProgress.questionOrder.map((id) =>
+                              questionsData.find((q) => q.id === id)
+                          )
+                        : questionsData;
+
+                    setQuestions(reorderedQuestions);
+                    console.log(reorderedQuestions);
+                } 
+                else {
                     // 继续上次进度
                     setCycle(savedProgress.cycle || 1);
                     setCurrentIndex((savedProgress.currentIndex || 0) + 1);
