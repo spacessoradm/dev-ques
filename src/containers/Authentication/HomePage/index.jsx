@@ -143,14 +143,6 @@ export default function HomePage() {
                           2A Exam
                       </a>
                       <br />
-                      <a
-                          style={{ padding: '6px' }}
-                          href={isLoggedIn ? "physicsexam" : "#"}
-                          aria-disabled={!isLoggedIn}
-                          onClick={(e) => !isLoggedIn && e.preventDefault()} // Prevent navigation
-                      >
-                          Physics Exam
-                      </a>
                     </div>
                     )}
                 </div>
