@@ -20,7 +20,6 @@ import Dashboard from './containers/Client/Dashboard';*/
 
 // Admin Components
 import AdminLayout from './components/AdminLayout';
-import UserLayout from './components/UserLayout';
 import SideNavBar from './containers/Admin/Admin_Navigation/SideNavBar';
 import AdminDashboard from './containers/Admin/Admin_Dashboard';
 import UserDashboard from './containers/User/User_Dashboard';
